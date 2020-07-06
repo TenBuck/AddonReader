@@ -15,10 +15,11 @@ namespace AddonReader.Parser.Tests
             var json = LuaParser.LuaTableToJson(lua);
 
 
-            var rect = new BitmapProvider(new Rectangle(10,10,10,10))
-            
+            var rect = new BitmapProvider(new Rectangle(10, 10, 10, 10));
 
-            parser.Load(rect);
+
+            SavedVariableParser parser = new SavedVariableParser("Jetherenn","Netherwind", rect);
+            parser.Load();
         }
     }
 }
