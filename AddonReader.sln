@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonReader", "AddonReader\AddonReader.csproj", "{635A7EFB-C7EC-46B1-8C7E-44741A173992}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddonReaderTests", "AddonReaderTests\AddonReaderTests.csproj", "{781D2C23-9A8E-426E-9F67-FA6F8C1F8C22}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{635A7EFB-C7EC-46B1-8C7E-44741A173992}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{635A7EFB-C7EC-46B1-8C7E-44741A173992}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{635A7EFB-C7EC-46B1-8C7E-44741A173992}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{635A7EFB-C7EC-46B1-8C7E-44741A173992}.Release|Any CPU.Build.0 = Release|Any CPU
+		{781D2C23-9A8E-426E-9F67-FA6F8C1F8C22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{781D2C23-9A8E-426E-9F67-FA6F8C1F8C22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{781D2C23-9A8E-426E-9F67-FA6F8C1F8C22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{781D2C23-9A8E-426E-9F67-FA6F8C1F8C22}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EDB0BB9A-59BB-4F98-907B-6066320B7DA5}
+	EndGlobalSection
+EndGlobal
