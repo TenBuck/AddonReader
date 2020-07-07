@@ -4,23 +4,19 @@ namespace AddonReader
 {
     public class AddonReaderMgr
     {
-        private BitmapProvider bitmapProvider;
+        private readonly Dictionary<string, int> _addonConfig;
+        private BitmapProvider _bitmapProvider;
 
 
-        private List<DataFrame> frames;
-        private Dictionary<string, int> addonConfig;
+        private readonly List<DataFrame> _frames;
+
         public AddonReaderMgr(BitmapProvider bitmapProvider)
         {
-            this.bitmapProvider = bitmapProvider;
-
-
+            _bitmapProvider = bitmapProvider;
         }
 
         public void Initialize()
         {
-            
-
-
         }
     }
 }

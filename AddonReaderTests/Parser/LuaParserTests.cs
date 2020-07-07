@@ -1,5 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Drawing;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using System.Reflection;
 
 namespace AddonReader.Parser.Tests
 {
@@ -17,15 +19,38 @@ namespace AddonReader.Parser.Tests
         }
 
         [TestMethod()]
-        public void JsonToObjectTest()
+        public void LoadTest()
         {
-            var lua = File.ReadAllText("LuaTable.txt");
+            var path = @"C:\Program Files (x86)\World of Warcraft\_classic_\WTF\Account\FLAGMIRLOL\SavedVariables\TheFrames.lua";  
+            string lua = File.ReadAllText(path);
 
-            var json = LuaParser.LuaTableToJson(lua);
+            
 
 
+            var parser =  new LuaParser(lua);
 
+            var profile = parser
+                .Table("FramesDB")
+                .Field("profiles")
+                .Field("Govbailout - Netherwind")
+                .Field("kb")
+                .Get();
+
+
+            parser = LuaParser.Parse(lua).Table("FramesDB").Field("profiles")
+                .Field("Govbailout - Netherwind").Clone();
+
+            var kb = 
+                parser
+                .Field("kb")
+                .Get();
+
+            profile = parser
+                .Field("addonReader")
+                .Get();
 
         }
+
+
     }
 }

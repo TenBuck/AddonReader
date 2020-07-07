@@ -5,30 +5,22 @@ namespace AddonReader
 {
     public class StringDataFrame : IReader<string>
     {
-        private List<DataFrame> dataFrames = new List<DataFrame>();
-        public StringDataFrame()
-        {
-            
-        }
-
-        public void AddDataFrame(DataFrame dataFrame)
-        {
-            dataFrames.Add(dataFrame);
-        }
+        private readonly List<DataFrame> _dataFrames = new List<DataFrame>();
 
         public string Value
         {
             get
             {
                 var value = "";
-                foreach (var frame in dataFrames)
-                {
-                    value += frame.Color.ToChars();
-                }
+                foreach (var frame in _dataFrames) value += frame.Color.ToChars();
 
                 return value;
-
             }
+        }
+
+        public void AddDataFrame(DataFrame dataFrame)
+        {
+            _dataFrames.Add(dataFrame);
         }
     }
 }

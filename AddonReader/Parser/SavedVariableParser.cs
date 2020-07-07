@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using AddonReader.Data;
@@ -8,7 +7,7 @@ namespace AddonReader.Parser
 {
     public class SavedVariableParser
     {
-        private readonly string actionBarsPropertyName = "actionBars";
+        private readonly string actionBarsPropertyName = "actionbars";
         private readonly string addonConfigPropertyName = "addonReader";
 
         private readonly BitmapProvider bitmapProvider;
@@ -30,10 +29,19 @@ namespace AddonReader.Parser
 
         public AddonConfig AddonConfig { get; private set; }
 
+
+        public void LoadWith()
+        {
+            var config = LuaParser.Parse(File.ReadAllText(savedVariablePath))
+                .Table("FramesDB")
+                .Field("profiles")
+                .Field("kb");
+
+            
+        }
         public void Load()
         {
             var lua = File.ReadAllText(savedVariablePath);
-
             var json = LuaParser.LuaTableToJson(lua);
 
             var options = new JsonDocumentOptions
@@ -48,12 +56,11 @@ namespace AddonReader.Parser
 
                 var profilesElement = addonTableElement.GetProperty("profiles");
 
-
                 if (profilesElement.TryGetProperty(profileName, out var profileElement))
                 {
                     AddonConfig = ParseAddonConfig(profileElement.GetProperty(addonConfigPropertyName));
-                    // var kb = ParseKeyBindings(profileElement.GetProperty(kbPropertyName));
-                    // var actionBars = ParseActionBars(profileElement.GetProperty(actionBarsPropertyName));
+                    var kb = ParseKeyBindings(profileElement.GetProperty(kbPropertyName));
+                    var actionBars = ParseActionBars(profileElement.GetProperty(actionBarsPropertyName));
                     var dataFrames = ParseDataFrames(profileElement.GetProperty(framesPropertyName));
                 }
             }
@@ -69,30 +76,46 @@ namespace AddonReader.Parser
         }
 
 
-        private Dictionary<string, DataFrame> ParseDataFrames(JsonElement dataFramesElement)
+        private List<DataFrame> ParseDataFrames(JsonElement dataFramesElement)
         {
-            var dataFramesDict = new Dictionary<string, DataFrame>();
-            foreach (var dataFrameElement in dataFramesElement.EnumerateObject())
+            var dataFrames = new List<DataFrame>();
+            foreach (var dataFrame in dataFramesElement.EnumerateObject())
             {
-                var data = dataFrameElement.Value.GetString().Split(";");
+                var dataFrameBuilder = new DataFramerBuilder(AddonConfig, bitmapProvider);
 
-                var index = data[0];
-                var name = data[1];
-
-                dataFramesDict.Add(name, new DataFrame(int.Parse(index), name, bitmapProvider));
+                dataFrames.Add(dataFrameBuilder.BuildFromParse(dataFrame.Value.GetString()));
             }
 
-            return dataFramesDict;
+            return dataFrames;
         }
 
-        private Dictionary<string, int> ParseActionBars(JsonElement actionBarsElement)
+        private List<ActionBarItem> ParseActionBars(JsonElement actionBarsElement)
         {
-            throw new NotImplementedException();
+            var actionBars = new List<ActionBarItem>();
+
+            foreach (var actionBar in actionBarsElement.EnumerateObject())
+            {
+                var actionBarItem = ActionBarItem.Parse(actionBar.Value.GetString());
+                actionBars.Add(actionBarItem);
+            }
+
+            return actionBars;
         }
 
-        private Dictionary<string, string> ParseKeyBindings(JsonElement keyBindingElement)
+
+        // Currently only saves the first keybinding
+        private List<KeyBind> ParseKeyBindings(JsonElement keyBindingsElement)
         {
-            throw new NotImplementedException();
+            var keyBindings = new List<KeyBind>();
+
+            foreach (var keyBinding in keyBindingsElement.EnumerateObject())
+            {
+                var keyBind = KeyBind.ParseKeyBind(keyBinding.Value.GetString());
+
+                if (keyBind != null) keyBindings.Add(keyBind);
+            }
+
+            return keyBindings;
         }
     }
 }

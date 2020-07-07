@@ -10,31 +10,22 @@ namespace AddonReader
             Bool,
             Decimal,
             Chars
-           
         }
 
-        private readonly BitmapProvider bitmapProvider;
+        private readonly BitmapProvider _bitmapProvider;
 
-        public DataFrame(Point p, int index, string name, BitmapProvider bitmapProvider)
+        public DataFrame(int index, Point p, string name, BitmapProvider bitmapProvider)
         {
+            Index = index;
             Point = p;
-            Index = index;
             Name = name;
+            _bitmapProvider = bitmapProvider;
         }
 
-        public DataFrame(int index, string name, BitmapProvider bitmapProvider)
-        {
-            Index = index;
-            Name = name;
-            this.bitmapProvider = bitmapProvider;
-        }
-
-        public Color Color => bitmapProvider.GetBitmap().GetPixel(Point.X, Point.Y);
+        public Color Color => _bitmapProvider.GetBitmap().GetPixel(Point.X, Point.Y);
         public Point Point { get; }
         public int Index { get; }
-
         public string Name { get; }
-
 
         
     }

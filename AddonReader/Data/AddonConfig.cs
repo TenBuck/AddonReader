@@ -5,7 +5,7 @@ using System.Dynamic;
 
 namespace AddonReader.Data
 {
-    public class AddonConfig
+    public class AddonConfig 
     {
         public int MaxRow { get; private set; }
         public int MaxColumn { get; private set; }

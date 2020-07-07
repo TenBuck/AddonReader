@@ -7,11 +7,10 @@ namespace AddonReader
     {
         private const int Timeout = 500;
 
-        private Bitmap bitmap;
-        private Rectangle bitmapRectangle;
-
         private readonly Stopwatch stopWatch = new Stopwatch();
 
+        private Bitmap bitmap;
+        private Rectangle bitmapRectangle;
 
         public BitmapProvider(Rectangle rectangle)
         {
