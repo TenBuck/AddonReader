@@ -28,22 +28,25 @@ namespace AddonReader.Data
         public Rectangle AddonRectangle => new Rectangle(0, 0, Columns * CellDistance, (Rows * CellDistance));
         public int CellDistance => CellSpacing + CellSize;
 
-        public AddonConfig(Dictionary<string, int> configsDictionary)
+
+        public List<KeyValuePair<string, int>> Configs { get; }
+        public AddonConfig(IEnumerable<KeyValuePair<string, string>> configsDictionary)
         {
-            
             var properties = typeof(AddonConfig).GetProperties();
-            foreach (KeyValuePair<string, int> kvp in configsDictionary)
+            foreach (KeyValuePair<string, string> kvp in configsDictionary)
             {
-                var property = typeof(AddonConfig).GetProperty(kvp.Key.ToString());
+                var property = typeof(AddonConfig).GetProperty(kvp.Key);
 
-                if (property != null)
-                {
-                    var value = Convert.ChangeType(kvp.Value, property.PropertyType);
+                if (property == null) continue;
 
-                    property.SetValue(this,value);
-                }
+                var value = Convert.ChangeType(kvp.Value, property.PropertyType);
+
+                property.SetValue(this,value);
 
             }
         }
+
+       
+        
     }
 }

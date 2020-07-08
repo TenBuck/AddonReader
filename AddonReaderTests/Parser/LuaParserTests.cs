@@ -1,14 +1,12 @@
-﻿using System.Drawing;
+﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
-using System.Reflection;
 
 namespace AddonReader.Parser.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class LuaParserTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void LuaTableToJsonTest()
         {
             var lua = File.ReadAllText("LuaTable.txt");
@@ -18,39 +16,22 @@ namespace AddonReader.Parser.Tests
             File.AppendAllText("JsonTable.json", json);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void LoadTest()
         {
-            var path = @"C:\Program Files (x86)\World of Warcraft\_classic_\WTF\Account\FLAGMIRLOL\SavedVariables\TheFrames.lua";  
-            string lua = File.ReadAllText(path);
+            var path =
+                @"C:\Program Files (x86)\World of Warcraft\_classic_\WTF\Account\FLAGMIRLOL\SavedVariables\TheFrames.lua";
+            var lua = File.ReadAllText(path);
 
-            
-
-
-            var parser =  new LuaParser(lua);
-
-            var profile = parser
-                .Table("FramesDB")
-                .Field("profiles")
-                .Field("Govbailout - Netherwind")
-                .Field("kb")
-                .Get();
-
+            var parser = new LuaParser(lua);
 
             parser = LuaParser.Parse(lua).Table("FramesDB").Field("profiles")
                 .Field("Govbailout - Netherwind").Clone();
 
-            var kb = 
+            var kb =
                 parser
-                .Field("kb")
-                .Get();
-
-            profile = parser
-                .Field("addonReader")
-                .Get();
-
+                    .Field("kb")
+                    .GetList();
         }
-
-
     }
 }

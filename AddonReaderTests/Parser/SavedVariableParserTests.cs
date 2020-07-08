@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using AddonReader.SavedVariables;
 
 namespace AddonReader.Parser.Tests
 {
@@ -18,7 +19,7 @@ namespace AddonReader.Parser.Tests
             var rect = new BitmapProvider(new Rectangle(10, 10, 10, 10));
 
 
-            SavedVariableParser parser = new SavedVariableParser("Jetherenn","Netherwind", rect);
+            SavedVariablesParser parser = new SavedVariablesParser("Govbailout","Netherwind");
             parser.Load();
         }
     }

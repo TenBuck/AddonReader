@@ -13,10 +13,6 @@ namespace AddonReader.Data.Tests
         [TestMethod()]
         public void ParseKeysTest()
         {
-            var keys = "SHIFT";//"-SPACE";
-
-            var kb = KeyBind.ParseKeys(keys);
-            Assert.AreEqual(kb, Keys.Shift);
         }
         [TestMethod()]
         public void ParseKeysKCTest()

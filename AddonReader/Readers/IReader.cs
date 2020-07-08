@@ -2,7 +2,7 @@
 
 namespace AddonReader
 {
-    public interface IReader<T>
+    public interface IReader<out T>
     {
         public T Value { get; }
     }

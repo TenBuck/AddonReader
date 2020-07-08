@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 
@@ -9,7 +11,6 @@ namespace AddonReader.Parser
         private readonly JsonElement _root;
 
         private JsonElement currentJsonElement;
-
         private LuaParser(JsonElement root)
         {
             _root = root.Clone();
@@ -78,7 +79,7 @@ namespace AddonReader.Parser
             return this;
         }
 
-        public Dictionary<string, string> Get()
+        public Dictionary<string, string> GetDictionary() 
         {
             var dict = new Dictionary<string, string>();
             foreach (var element in currentJsonElement.EnumerateObject())
@@ -86,7 +87,6 @@ namespace AddonReader.Parser
                 var value = element.Value.ValueKind == JsonValueKind.String
                     ? element.Value.GetString()
                     : element.Value.ToString();
-
                 dict.Add(element.Name, value);
             }
 
@@ -94,11 +94,27 @@ namespace AddonReader.Parser
             return dict;
         }
 
+        public List<string> GetList()
+        {
+            var list = new List<string>();
+            foreach (var element in currentJsonElement.EnumerateObject())
+            {
+                var value = element.Value.ValueKind == JsonValueKind.String
+                    ? element.Value.GetString()
+                    : element.Value.ToString();
+                list.Add(value);
+            }
+
+            Reset();
+            return list;
+        }
+       
         private void Reset()
         {
             currentJsonElement = _root;
         }
 
+        
         public LuaParser Clone()
         {
             return new LuaParser(currentJsonElement);

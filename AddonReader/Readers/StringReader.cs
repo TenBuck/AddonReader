@@ -17,7 +17,6 @@ namespace AddonReader
                 return value;
             }
         }
-
         public void AddDataFrame(DataFrame dataFrame)
         {
             _dataFrames.Add(dataFrame);
