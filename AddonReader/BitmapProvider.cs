@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
 
-namespace AddonReader
+using TenBot.Extensions;
+
+namespace TenBot
 {
     public class BitmapProvider
     {
@@ -10,20 +12,26 @@ namespace AddonReader
         private readonly Stopwatch stopWatch = new Stopwatch();
 
         private Bitmap bitmap;
-        private Rectangle bitmapRectangle;
 
-        public BitmapProvider(Rectangle rectangle)
+        public Rectangle AddonRectangle { get => _rectangle; set => _rectangle.Location = (_wowWindow.GetClientOriginPoint()); }
+
+        private WowWindow _wowWindow;
+        private Rectangle _rectangle = Rectangle.Empty;
+
+        public BitmapProvider(WowWindow wowWindow)
         {
-            bitmapRectangle = rectangle;
+            _wowWindow = wowWindow;
+            
         }
+
 
         public Bitmap GetBitmap()
         {
             if (stopWatch.IsRunning && stopWatch.ElapsedMilliseconds <= Timeout) return bitmap;
-            bitmap = new Bitmap(bitmapRectangle.Width, bitmapRectangle.Height);
+            bitmap = new Bitmap(_rectangle.Width, _rectangle.Height);
             using (var graphics = Graphics.FromImage(bitmap))
             {
-                graphics.CopyFromScreen(bitmapRectangle.X, bitmapRectangle.Y, 0, 0, bitmap.Size);
+                graphics.CopyFromScreen(_rectangle.X, _rectangle.Y, 0, 0, bitmap.Size);
             }
 
             stopWatch.Restart();

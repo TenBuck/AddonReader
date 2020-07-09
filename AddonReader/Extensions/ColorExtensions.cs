@@ -1,15 +1,15 @@
 ﻿using System.Drawing;
 
-namespace AddonReader.Extensions
+namespace TenBot.Extensions
 {
     public static class ColorExtensions
     {
         public static string ToChars(this Color color)
         {
             var chars = "";
-            chars += ((char) color.R).ToString();
-            chars += ((char) color.G).ToString();
-            chars += ((char) color.B).ToString();
+            chars += ((char)color.R).ToString();
+            chars += ((char)color.G).ToString();
+            chars += ((char)color.B).ToString();
             return chars;
         }
 
