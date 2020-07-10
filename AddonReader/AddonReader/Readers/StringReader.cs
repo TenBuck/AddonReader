@@ -7,7 +7,6 @@ namespace TenBot.AddonReader.Readers
     public class StringDataFrame : IReader<string>
     {
         private readonly List<DataFrame> _dataFrames = new List<DataFrame>();
-
         public string Value
         {
             get

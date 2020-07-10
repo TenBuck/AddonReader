@@ -34,10 +34,10 @@ namespace ConsoleApp1
         {
 
 
-            Log.Logger = new LoggerConfiguration().CreateLogger();
+           // Log.Logger = new LoggerConfiguration().CreateLogger();
             // Configuration Builder
 
-            services.AddSingleton<ILogger>(Log.Logger);
+           // services.AddSingleton<ILogger>(Log.Logger);
 
 
             // WoW Related
@@ -45,7 +45,7 @@ namespace ConsoleApp1
             services.AddTransient<WowWindow>();
             services.AddSingleton<BitmapProvider>();
             services.AddSingleton<AddonReaderMgr>();
-            services.AddSingleton<DataFramesMgr>();
+            
         }
     }
 }

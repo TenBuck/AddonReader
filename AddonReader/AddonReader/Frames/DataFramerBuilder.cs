@@ -1,4 +1,6 @@
-﻿namespace TenBot
+﻿using System;
+
+namespace TenBot
 {
     public class DataFramerBuilder
     {
@@ -15,7 +17,8 @@
         {
             var paramStrings = dataFrame.Split(";");
             var index = int.Parse(paramStrings[0]);
-            var name = paramStrings[1];
+            var framesId = paramStrings[1];
+            var name = paramStrings[2];
             var p = _addonConfig.GetPointFromIndex(index);
 
             return new DataFrame(index, p, name, _bitmapProvider);

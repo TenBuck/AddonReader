@@ -1,11 +1,12 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 using Serilog;
 
 using TenBot.AddonReader;
 using TenBot.AddonReader.Frames;
-using TenBot.Game.WowEntities;
-using TenBot.Game.WowTypes;
+using TenBot.AddonReader.Readers;
+
 
 namespace TenBot
 {
@@ -31,8 +32,21 @@ namespace TenBot
 
                 var rect = _wowWindow.Rectangle;
                 var clientRect = _wowWindow.ClientRectangle;
-                var player = new Unit(UnitId.Player, _addonReaderMgr._frames);
-                Log.Logger.Information("Health is {Health}");
+
+
+
+                var unit = new UnitReader(_addonReaderMgr._frames);
+
+
+
+
+                Console.WriteLine((unit.Health));
+                Console.WriteLine((unit.PowerMax));
+                Console.WriteLine((unit.Power));
+                Console.WriteLine((unit.Health));
+
+                Console.WriteLine(unit.Health.ToString(), unit.HealthMax.ToString(), unit.Power.ToString(),
+                    unit.PowerMax.ToString(), unit.Level.ToString(), unit.MovingSpeed.ToString());
             };
 
 

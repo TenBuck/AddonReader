@@ -2,14 +2,10 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
-
 using GregsStack.InputSimulatorStandard;
 using GregsStack.InputSimulatorStandard.Native;
-
 using PInvoke;
-
 using Serilog;
-
 using TenBot.Extensions;
 
 namespace TenBot
@@ -19,9 +15,18 @@ namespace TenBot
         private readonly ILogger logger;
         private readonly InputSimulator simulator = new InputSimulator();
 
-        public WowWindow(ILogger logger)
+        private readonly float _dpiX;
+        private readonly float _dpiY;
+
+        public WowWindow()
         {
             this.logger = logger;
+
+            using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+            {
+                _dpiX = graphics.DpiX;
+                _dpiY = graphics.DpiY;
+            }
         }
 
         public Process? Process => GetProcess("WowClassic");
@@ -32,8 +37,7 @@ namespace TenBot
         {
             get
             {
-                RECT rect;
-                User32.GetWindowRect(Handle, out rect);
+                User32.GetWindowRect(Handle, out var rect);
 
                 return rect.ToRectangle();
             }
@@ -43,11 +47,11 @@ namespace TenBot
         {
             get
             {
-                RECT rect;
-                User32.GetClientRect(Handle, out rect);
+                User32.GetClientRect(Handle, out var rect);
                 return rect.ToRectangle();
             }
         }
+
 
         public async Task SimulateKeyPress(VirtualKeyCode keyCode)
         {
@@ -110,9 +114,21 @@ namespace TenBot
             return point;
         }
 
+        public Rectangle ClientToScreen(Rectangle rect)
+        {
+            var p = GetClientOriginPoint();
+
+
+            return new Rectangle(
+                (int) ((rect.X + p.X) * 2),
+                (int) ((rect.Y + p.Y)* 2),
+                (int) (rect.Width * 2),
+                (int) (rect.Height * 2));
+        }
+
         public void MoveWindow(Point point)
         {
-            User32.SetWindowPos(Handle, (IntPtr)0, 0, 0, 0, 0, User32.SetWindowPosFlags.SWP_NOSIZE);
+            User32.SetWindowPos(Handle, (IntPtr) 0, 0, 0, 0, 0, User32.SetWindowPosFlags.SWP_NOSIZE);
         }
 
         private async Task Sleep(int ms)
@@ -130,4 +146,3 @@ namespace TenBot
         }
     }
 }
-

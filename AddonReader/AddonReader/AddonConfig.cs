@@ -27,7 +27,6 @@ namespace TenBot
         }
 
        
-
         public Rectangle AddonRectangle => new Rectangle(0, 0, Columns * CellDistance, Rows * CellDistance);
 
         public int BoxCount { get; private set; }

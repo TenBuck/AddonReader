@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Serilog;
 
 using TenBot.AddonReader.Frames;
 using TenBot.AddonReader.SavedVariables;
 using TenBot.AddonReader.SavedVariables.Data;
-using TenBot.Game.WowEntities;
-using TenBot.Game.WowTypes;
 
 namespace TenBot.AddonReader
 {
@@ -33,7 +31,9 @@ namespace TenBot.AddonReader
             bitmapProvider.AddonRectangle = _addonConfig.AddonRectangle;
 
             var framesBuilder = new DataFramerBuilder(_addonConfig, _bitmapProvider);
-            _frames = savedVariables.GetSavedVariableByName("frames").Fields.ConvertAll(framesBuilder.BuildFromParse);
+            _frames = savedVariables.GetSavedVariableByName("frames").Fields
+                .ConvertAll(framesBuilder.BuildFromParse)
+                .OrderBy(x => x.Index).ToList();
 
             _keyBinds = savedVariables.GetSavedVariableByName("keybindings").Fields
                 .ConvertAll(KeyBind.Parse);
@@ -41,10 +41,20 @@ namespace TenBot.AddonReader
             _actionBarItems = savedVariables.GetSavedVariableByName("actionBars").Fields
                 .ConvertAll(ActionBarItem.Parse);
 
-
-            
-
         }
+
+
+        public List<DataFrame> GetDataFrames()
+        {
+            return _frames;
+        }
+
+        public List<DataFrame> GetPlayerDataFrames()
+        {
+            return _frames.FindAll(s => s.Name.Contains("player"));
+        }
+
+
 
 
         

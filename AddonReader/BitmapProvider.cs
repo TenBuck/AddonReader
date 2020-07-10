@@ -1,42 +1,41 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
 
-using TenBot.Extensions;
-
 namespace TenBot
 {
     public class BitmapProvider
     {
         private const int Timeout = 500;
 
-        private readonly Stopwatch stopWatch = new Stopwatch();
 
-        private Bitmap bitmap;
+        private readonly Stopwatch _stopWatch = new Stopwatch();
 
-        public Rectangle AddonRectangle { get => _rectangle; set => _rectangle.Location = (_wowWindow.GetClientOriginPoint()); }
+        private readonly WowWindow _wowWindow;
 
-        private WowWindow _wowWindow;
-        private Rectangle _rectangle = Rectangle.Empty;
-
+        private Bitmap _bitmap;
         public BitmapProvider(WowWindow wowWindow)
         {
             _wowWindow = wowWindow;
-            
         }
 
+        public Rectangle AddonRectangle { get; set; }
+
+        private Rectangle ClientRectangle => _wowWindow.ClientToScreen(AddonRectangle);
 
         public Bitmap GetBitmap()
         {
-            if (stopWatch.IsRunning && stopWatch.ElapsedMilliseconds <= Timeout) return bitmap;
-            bitmap = new Bitmap(_rectangle.Width, _rectangle.Height);
-            using (var graphics = Graphics.FromImage(bitmap))
+            if (_stopWatch.IsRunning && _stopWatch.ElapsedMilliseconds <= Timeout) return _bitmap;
+            _bitmap = new Bitmap(AddonRectangle.Width, AddonRectangle.Height);
+            using (var graphics = Graphics.FromImage(_bitmap))
             {
-                graphics.CopyFromScreen(_rectangle.X, _rectangle.Y, 0, 0, bitmap.Size);
+                
+                graphics.CopyFromScreen(ClientRectangle.Location, Point.Empty, _bitmap.Size);
             }
 
-            stopWatch.Restart();
+            _bitmap.Save("test.jpg");
+            _stopWatch.Restart();
 
-            return bitmap;
+            return _bitmap;
         }
     }
 }
