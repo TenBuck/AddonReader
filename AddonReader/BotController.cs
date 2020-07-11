@@ -1,10 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using GregsStack.InputSimulatorStandard.Native;
+using PInvoke;
 using Serilog;
 using TenBot.AddonReader;
 using TenBot.AddonReader.Readers;
+using TenBot.Game.WowTypes;
 
 namespace TenBot
 {
@@ -15,12 +21,14 @@ namespace TenBot
 
         private readonly WowWindow _wowWindow;
         private readonly ILogger _logger;
+        private readonly KeyBindSender _keyBindSender;
 
-        public BotController(AddonReaderMgr addonReaderMgr, WowWindow wowWindow, ILogger logger)
+        public BotController(AddonReaderMgr addonReaderMgr, WowWindow wowWindow, ILogger logger, KeyBindSender keyBindSender)
         {
             _addonReaderMgr = addonReaderMgr;
             _wowWindow = wowWindow;
             _logger = logger;
+            _keyBindSender = keyBindSender;
         }
 
         public async Task Start(CancellationToken ct)
@@ -32,8 +40,6 @@ namespace TenBot
                 _logger.Error("WoW not found...");
                 return;
             }
-           
-
             try
             {
                 _addonReaderMgr.Initialize();
@@ -51,15 +57,12 @@ namespace TenBot
             }
         }
 
-        public async Task Run(CancellationToken ct)
+        private async Task Run(CancellationToken ct)
         {
 
             
             while (true)
             {
-               // _wowWindow.SetForeground();
-               // _wowWindow.MoveWindow(Point.Empty);
-
                 var player = new PlayerReader(_addonReaderMgr.BoxMgr);
                 var target = new TargetReader(_addonReaderMgr.BoxMgr, "target");
                 var targettarget = new TargetReader(_addonReaderMgr.BoxMgr, "targettarget");
@@ -68,9 +71,7 @@ namespace TenBot
                 Log.Logger.Debug("{@Target}", target);
                 Log.Logger.Debug("{@TargetTarget}", targettarget);
 
-                await Task.Delay(250, ct);
-               
-
+                await Task.Delay(200);
                 if (ct.IsCancellationRequested)
                 {
                     _logger.Information("cancelling task:");

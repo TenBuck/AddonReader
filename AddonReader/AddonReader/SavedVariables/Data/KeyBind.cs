@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Binding = TenBot.Game.WowTypes.Binding;
+using GregsStack.InputSimulatorStandard.Native;
+using TenBot.Game.WowTypes;
 
 namespace TenBot.AddonReader.SavedVariables.Data
 {
@@ -20,30 +21,31 @@ namespace TenBot.AddonReader.SavedVariables.Data
             RAIDTARGET
         }
 
-        public KeyBind(List<Keys> keyList, Binding binding, BindingHeader header)
+        public KeyBind(List<VirtualKeyCode> keyList, KeyBinding keyBinding, BindingHeader header)
         {
             KeyList = keyList;
-            Binding = binding;
+            KeyBinding = keyBinding;
             Header = header;
         }
 
         public KeyBind(string? keys, string name, string header)
         {
-            Binding = ParseBinding(name);
+            KeyBinding = ParseBinding(name);
             Header = ParseHeader(header);
 
             if (keys != null)
             {
                 keys = keys.Replace("--", "-DASH");
-
                 var keysArray = keys.Split("-");
                 foreach (var key in keysArray) KeyList.Add(ParseKeys(key.Replace("DASH", "-")));
             }
         }
-        public List<Keys> KeyList { get; } = new List<Keys>();
+
+
+        public List<VirtualKeyCode> KeyList { get; } = new List<VirtualKeyCode>();
         public BindingHeader Header { get; }
 
-        public Binding Binding { get; }
+        public KeyBinding KeyBinding { get; }
 
         public static KeyBind Parse(string keyBind)
         {
@@ -54,17 +56,47 @@ namespace TenBot.AddonReader.SavedVariables.Data
                 : new KeyBind(data[3], data[1], data[2]);
         }
 
-        private Keys ParseKeys(string key)
+        private static VirtualKeyCode ParseKeys(string key)
         {
-            return Enum.TryParse(key, true, out Keys keyValue) ? keyValue : Keys.None;
+            switch (key)
+            {
+                case "SHIFT":
+                    return VirtualKeyCode.SHIFT;
+                case "CTRL":
+                    return VirtualKeyCode.CONTROL;
+                case "ALT":
+                    return VirtualKeyCode.MENU;
+                case "1":
+                    return VirtualKeyCode.VK_1;
+                case "2":
+                    return VirtualKeyCode.VK_2;
+                case "3":
+                    return VirtualKeyCode.VK_3;
+                case "4":
+                    return VirtualKeyCode.VK_4;
+                case "5":
+                    return VirtualKeyCode.VK_5;
+                case "6":
+                    return VirtualKeyCode.VK_6;
+                case "7":
+                    return VirtualKeyCode.VK_7;
+                case "8":
+                    return VirtualKeyCode.VK_8;
+                case "9":
+                    return VirtualKeyCode.VK_9;
+            }
+
+            return Enum.TryParse(key, true, out Keys keyValue)
+                ? (VirtualKeyCode) keyValue
+                : (VirtualKeyCode) Keys.None;
         }
 
-        private Binding ParseBinding(string binding)
+        private static KeyBinding ParseBinding(string binding)
         {
-            return Enum.TryParse(binding, true, out Binding bindingValue) ? bindingValue : 0;
+            return Enum.TryParse(binding, true, out KeyBinding bindingValue) ? bindingValue : 0;
         }
 
-        private BindingHeader ParseHeader(string bindingHeader)
+        private static BindingHeader ParseHeader(string bindingHeader)
         {
             if (bindingHeader.StartsWith("BINDING_HEADER"))
                 bindingHeader = bindingHeader.Replace("BINDING_HEADER_", "");

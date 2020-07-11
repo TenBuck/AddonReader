@@ -2,8 +2,6 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
-using GregsStack.InputSimulatorStandard;
-using GregsStack.InputSimulatorStandard.Native;
 using PInvoke;
 using TenBot.Extensions;
 
@@ -11,21 +9,6 @@ namespace TenBot
 {
     public class WowWindow
     {
-        private readonly float _dpiX;
-        private readonly float _dpiY;
-
-        private readonly InputSimulator _simulator = new InputSimulator();
-
-        public WowWindow()
-        {
-            using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
-            {
-                _dpiX = graphics.DpiX;
-                _dpiY = graphics.DpiY;
-                graphics.Dispose();
-            }
-        }
-
         public Process? Process => GetProcess("WowClassic");
 
         public IntPtr Handle => Process?.MainWindowHandle ?? IntPtr.Zero;
@@ -72,8 +55,8 @@ namespace TenBot
             return new Rectangle(
                 (int) (rect.X + p.X),
                 (int) (rect.Y + p.Y),
-                (int) rect.Width,
-                (int) rect.Height);
+                rect.Width,
+                rect.Height);
         }
 
         public void MoveWindow(Point point)

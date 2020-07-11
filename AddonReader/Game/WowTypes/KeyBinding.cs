@@ -1,6 +1,6 @@
 ﻿namespace TenBot.Game.WowTypes
 {
-    public enum Binding
+    public enum KeyBinding
     {
         MOVEANDSTEER = 1,
         MOVEFORWARD,

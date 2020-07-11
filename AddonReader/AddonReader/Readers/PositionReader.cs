@@ -13,8 +13,6 @@ namespace TenBot.AddonReader.Readers
             _boxMgr = boxMgr;
             _unitName = unitName + "-Position-";
         }
-
-
         public double X => _boxMgr.GetBoxByName(_unitName + "X").Color.ToDouble();
         public double Y => _boxMgr.GetBoxByName(_unitName + "Y").Color.ToDouble();
         public double Facing => _boxMgr.GetBoxByName(_unitName + "Facing").Color.ToDouble();

@@ -1,17 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
+using Serilog;
+using TenBot.AddonReader.SavedVariables;
 
 namespace TenBot
 {
-    public class AddonConfig
+    public class AddonConfigProvider
     {
-        public AddonConfig(IEnumerable<string> configEnumerable)
+        private readonly ILogger _logger;
+
+        public AddonConfigProvider(SavedVariablesParser parser, ILogger logger)
         {
-            foreach (var config in configEnumerable)
+            _logger = logger;
+
+            var fields = parser.GetGlobalByName("addonConfig").Fields;
+
+            foreach (var config in fields)
             {
                 var data = config.Split(";");
-                var property = typeof(AddonConfig).GetProperty(data[0]);
+                var property = typeof(AddonConfigProvider).GetProperty(data[0]);
 
                 if (property == null) continue;
 
@@ -19,7 +26,10 @@ namespace TenBot
 
                 property.SetValue(this, value);
             }
+
+            _logger.Information("Loaded addon settings from saved variables");
         }
+
 
         public Rectangle AddonRectangle => new Rectangle(0, 0, Columns * CellDistance, Rows * CellDistance);
 
@@ -39,16 +49,15 @@ namespace TenBot
         public int Rows => BoxCount / MaxColumns + 1;
 
         public int StringMaxChar { get; private set; }
-        
-        public int ErrorInt { get; set; }
 
+        public int ErrorInt { get; set; }
 
         // Lua index starts at 1, 
         public Point GetPointFromIndex(int index)
         {
             var xOffset = CellSize / 2 - 1;
             var yOffset = CellSize / 2 - 1;
-            var x = xOffset + ((index - 1) % MaxColumns) * CellDistance;
+            var x = xOffset + (index - 1) % MaxColumns * CellDistance;
             var y = yOffset + (index - 1) / MaxColumns * CellDistance;
 
 

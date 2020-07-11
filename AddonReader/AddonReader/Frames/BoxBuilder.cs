@@ -5,10 +5,10 @@ namespace TenBot
 {
     public class BoxBuilder
     {
-        private readonly AddonConfig _addonConfig;
+        private readonly AddonConfigProvider _addonConfig;
         private readonly BitmapProvider _bitmapProvider;
 
-        public BoxBuilder(AddonConfig config, BitmapProvider bitmapProvider)
+        public BoxBuilder(AddonConfigProvider config, BitmapProvider bitmapProvider)
         {
             _addonConfig = config;
             _bitmapProvider = bitmapProvider;

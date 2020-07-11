@@ -3,13 +3,12 @@
 using System.Drawing;
 using Serilog;
 using TenBot.AddonReader;
-using TenBot.AddonReader.Frames;
 
 #endregion
 
 namespace TenBot
 {
-    public class Box  
+    public class Box
     {
         public enum DataFrameType
         {
@@ -34,7 +33,7 @@ namespace TenBot
             get
             {
                 var color = _bitmapProvider?.GetBitmap().GetPixel(Point.X, Point.Y) ?? Color.Empty;
-                Log.Logger.Verbose("{Name} at {Point}: {Color}",Name, Point, color);
+                Log.Logger.Verbose("{Name} at {Point}: {Color}", Name, Point, color);
                 return color;
             }
         }
@@ -42,7 +41,7 @@ namespace TenBot
         public int Index { get; }
 
         public string Name { get; }
-        
+
 
         public Point Point { get; set; }
 
@@ -59,6 +58,4 @@ namespace TenBot
             return new Box(index, p, name, null);
         }
     }
-
-    
 }

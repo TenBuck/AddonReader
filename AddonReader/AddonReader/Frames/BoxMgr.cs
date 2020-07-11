@@ -10,7 +10,7 @@ namespace TenBot.AddonReader.Frames
         private readonly Dictionary<string, List<Box>> _boxDictionary = new Dictionary<string, List<Box>>();
         private readonly List<Box> _boxes;
 
-        public BoxMgr(SavedVariable boxes, AddonConfig config, WowWindow wowWindow)
+        public BoxMgr(SavedVariable boxes, AddonConfigProvider config, WowWindow wowWindow)
         {
             wowWindow.MoveWindow(Point.Empty);
             var bitmapProvider = new BitmapProvider(wowWindow.ClientToScreen(config.AddonRectangle));

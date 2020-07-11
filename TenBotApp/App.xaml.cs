@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using GregsStack.InputSimulatorStandard;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
@@ -7,6 +8,7 @@ using TenBot;
 using TenBot.AddonReader;
 using TenBot.AddonReader.Readers;
 using TenBot.AddonReader.SavedVariables;
+using TenBot.AddonReader.SavedVariables.Data;
 
 namespace TenBotApp
 {
@@ -44,16 +46,23 @@ namespace TenBotApp
             // Configuration Builder
 
             services.AddSingleton<ILogger>(Log.Logger);
-            
+            services.AddSingleton(sink);
+
+
+            // UI
             services.AddSingleton<MainWindow>();
 
             // WoW Related
-            services.AddSingleton(sink);
+            
             services.AddTransient<BotController>();
             services.AddSingleton<WowWindow>();
             services.AddSingleton<PlayerReader>();
+            services.AddSingleton<AddonConfigProvider>();
             
-            services.AddSingleton(s => new SavedVariablesParser("Jetherenn", "Netherwind"));
+            services.AddSingleton<KeyBindSender>();
+            services.AddSingleton<InputSimulator>();
+            
+            services.AddSingleton<SavedVariablesParser>(s=> new SavedVariablesParser("Jetherenn", "Netherwind"));
             services.AddSingleton<BitmapProvider>();
             services.AddSingleton<AddonReaderMgr>();
         }

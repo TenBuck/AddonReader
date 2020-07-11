@@ -85,7 +85,9 @@ namespace TenBotApp
         {
             cts = new CancellationTokenSource();
             PlayerPanel.Visibility = Visibility.Visible;
+            startBtn.IsEnabled = false;
             await _botController.Start(cts.Token);
+            startBtn.IsEnabled = true;
         }
 
         private void StopBtn_Click(object sender, RoutedEventArgs e)
