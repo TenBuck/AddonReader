@@ -1,32 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using TenBot.AddonReader.Frames;
 using TenBot.Extensions;
 
 namespace TenBot.AddonReader.Readers
 {
     public class UnitReader
     {
-        private readonly List<DataFrame> _frames;
+        private readonly BoxMgr _boxMgr;
 
-        public UnitReader(List<DataFrame> frames)
+       
+        private readonly string _unitName;
+
+        public UnitReader(BoxMgr boxMgr, string unitName)
         {
-            _frames = frames.FindAll(s => s.Name.Contains("player"));
+            _boxMgr = boxMgr;
+            _unitName = unitName;
         }
 
-        public int Health => _frames.Find(s => s.Name.Contains("player-Health")).Color.ToInt();
-
-        public int HealthMax => getDataFrame("player-HealthMax").Color.ToInt();
-
-
-        public int Power => getDataFrame("player-Power").Color.ToInt();
-        public int PowerMax => getDataFrame("player-PowerMax").Color.ToInt();
-        
-        public int Level => getDataFrame("player-Level").Color.ToInt();
-        public int IsDead => getDataFrame("player-IsDead").Color.ToInt();
-        public int MovingSpeed => getDataFrame("player-MovingSpeed").Color.ToInt();
-
-        private DataFrame getDataFrame(string name)
-        {
-            return _frames.Find(s => s.Name.Contains(name));
-        }
+        public string Name => _boxMgr.GetBoxListByName(_unitName + "-Name").BoxesToString();
+        public int Health => _boxMgr.GetBoxByName(_unitName + "-Health").Color.ToInt();
+        public int HealthMax => _boxMgr.GetBoxByName(_unitName + "-HealthMax").Color.ToInt();
+        public int Power => _boxMgr.GetBoxByName(_unitName + "-Power").Color.ToInt();
+        public int PowerMax => _boxMgr.GetBoxByName(_unitName + "-PowerMax").Color.ToInt();
+        public int Level => _boxMgr.GetBoxByName(_unitName + "-Level").Color.ToInt();
+        public int IsDead => _boxMgr.GetBoxByName(_unitName + "-IsDead").Color.ToInt();
+        public int MovingSpeed => _boxMgr.GetBoxByName(_unitName + "-MovingSpeed").Color.ToInt();
     }
 }

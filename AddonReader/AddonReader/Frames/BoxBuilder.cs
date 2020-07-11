@@ -2,26 +2,26 @@
 
 namespace TenBot
 {
-    public class DataFramerBuilder
+    public class BoxBuilder
     {
-        private AddonConfig _addonConfig;
+        private readonly AddonConfig _addonConfig;
         private readonly BitmapProvider _bitmapProvider;
 
-        public DataFramerBuilder(AddonConfig config, BitmapProvider bitmapProvider)
+        public BoxBuilder(AddonConfig config, BitmapProvider bitmapProvider)
         {
             _addonConfig = config;
             _bitmapProvider = bitmapProvider;
         }
 
-        public DataFrame BuildFromParse(string dataFrame)
+        public Box BuildFromParse(string dataFrame)
         {
             var paramStrings = dataFrame.Split(";");
             var index = int.Parse(paramStrings[0]);
-            var framesId = paramStrings[1];
+           // var framesId = paramStrings[1];
             var name = paramStrings[2];
             var p = _addonConfig.GetPointFromIndex(index);
 
-            return new DataFrame(index, p, name, _bitmapProvider);
+            return new Box(index, p, name, _bitmapProvider);
         }
     }
 }

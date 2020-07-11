@@ -1,12 +1,14 @@
 ﻿#region
 
 using System.Drawing;
+using Serilog;
+using TenBot.AddonReader.Frames;
 
 #endregion
 
 namespace TenBot
 {
-    public class DataFrame
+    public class Box  
     {
         public enum DataFrameType
         {
@@ -16,10 +18,9 @@ namespace TenBot
             Chars
         }
 
-
         private readonly BitmapProvider? _bitmapProvider;
 
-        public DataFrame(int index, Point p, string name, BitmapProvider? bitmapProvider)
+        public Box(int index, Point p, string name, BitmapProvider? bitmapProvider)
         {
             _bitmapProvider = bitmapProvider;
             Index = index;
@@ -27,7 +28,15 @@ namespace TenBot
             Name = name;
         }
 
-        public Color Color => _bitmapProvider?.GetBitmap().GetPixel(Point.X, Point.Y) ?? Color.Empty;
+        public Color Color
+        {
+            get
+            {
+                var color = _bitmapProvider?.GetBitmap().GetPixel(Point.X, Point.Y) ?? Color.Empty;
+                //Log.Logger.Information("{Name} at {Point}: {Color}",Name, Point, color);
+                return color;
+            }
+        }
 
         public int Index { get; }
 
@@ -36,7 +45,7 @@ namespace TenBot
         public Point Point { get; set; }
 
 
-        public static DataFrame Parse(string value)
+        public static Box Parse(string value)
         {
             var paramStrings = value.Split(";");
 
@@ -45,7 +54,9 @@ namespace TenBot
             var name = paramStrings[2];
             var p = Point.Empty;
 
-            return new DataFrame(index, p, name, null);
+            return new Box(index, p, name, null);
         }
     }
+
+    
 }

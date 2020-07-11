@@ -5,27 +5,24 @@ using System.Threading.Tasks;
 using GregsStack.InputSimulatorStandard;
 using GregsStack.InputSimulatorStandard.Native;
 using PInvoke;
-using Serilog;
 using TenBot.Extensions;
 
 namespace TenBot
 {
     public class WowWindow
     {
-        private readonly ILogger logger;
-        private readonly InputSimulator simulator = new InputSimulator();
-
         private readonly float _dpiX;
         private readonly float _dpiY;
 
+        private readonly InputSimulator _simulator = new InputSimulator();
+
         public WowWindow()
         {
-            this.logger = logger;
-
             using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
             {
                 _dpiX = graphics.DpiX;
                 _dpiY = graphics.DpiY;
+                graphics.Dispose();
             }
         }
 
@@ -55,19 +52,19 @@ namespace TenBot
 
         public async Task SimulateKeyPress(VirtualKeyCode keyCode)
         {
-            simulator.Keyboard.KeyPress(keyCode);
+            _simulator.Keyboard.KeyPress(keyCode);
             await Sleep(50);
         }
 
         public async Task SimulateKeyUp(VirtualKeyCode keyCode)
         {
-            simulator.Keyboard.KeyUp(keyCode);
+            _simulator.Keyboard.KeyUp(keyCode);
             await Sleep(50);
         }
 
         public async Task SimulateKeyDown(VirtualKeyCode keyCode)
         {
-            simulator.Keyboard.KeyDown(keyCode);
+            _simulator.Keyboard.KeyDown(keyCode);
             await Sleep(50);
         }
 
@@ -75,7 +72,7 @@ namespace TenBot
         {
             await SetCursorPos(p);
             await Sleep(100);
-            simulator.Mouse.LeftButtonClick();
+            _simulator.Mouse.LeftButtonClick();
             await Sleep(100);
             await SetCursorPos(Point.Empty);
         }
@@ -84,7 +81,7 @@ namespace TenBot
         {
             await SetCursorPos(p);
             await Sleep(100);
-            simulator.Mouse.RightButtonClick();
+            _simulator.Mouse.RightButtonClick();
             await Sleep(100);
             await SetCursorPos(Point.Empty);
         }
@@ -95,7 +92,7 @@ namespace TenBot
             await Sleep(50);
         }
 
-        public Point GetCursorPos(Point point)
+        public static Point GetCursorPos()
         {
             return User32.GetCursorPos();
         }
@@ -120,10 +117,10 @@ namespace TenBot
 
 
             return new Rectangle(
-                (int) ((rect.X + p.X) * 2),
-                (int) ((rect.Y + p.Y)* 2),
-                (int) (rect.Width * 2),
-                (int) (rect.Height * 2));
+                (int) (rect.X + p.X),
+                (int) (rect.Y + p.Y),
+                (int) rect.Width,
+                (int) rect.Height);
         }
 
         public void MoveWindow(Point point)
@@ -136,13 +133,11 @@ namespace TenBot
             await Task.Delay(ms);
         }
 
-        private Process? GetProcess(string name)
+        private static Process? GetProcess(string name)
         {
             var processes = Process.GetProcessesByName(name);
 
-            if (processes == null) logger.Information("Failed to find WoW process...");
-
-            return processes[0];
+            return processes.Length < 1 ? null : processes[0];
         }
     }
 }

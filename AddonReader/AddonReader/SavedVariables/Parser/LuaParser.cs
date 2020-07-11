@@ -30,7 +30,7 @@ namespace TenBot.AddonReader.SavedVariables.Parser
         public static string LuaTableToJson(string lua)
         {
             var sb = new StringBuilder();
-            const string singleLineComment = @"--(.*?)\r?\n";
+            //const string singleLineComment = @"--(.*?)\r?\n";
 
             sb.Append('{');
             sb.Append(lua);

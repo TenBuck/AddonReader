@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-
 using Binding = TenBot.Game.WowTypes.Binding;
 
 namespace TenBot.AddonReader.SavedVariables.Data
@@ -28,7 +27,7 @@ namespace TenBot.AddonReader.SavedVariables.Data
             Header = header;
         }
 
-        public KeyBind(string keys, string name, string header)
+        public KeyBind(string? keys, string name, string header)
         {
             Binding = ParseBinding(name);
             Header = ParseHeader(header);
@@ -41,22 +40,18 @@ namespace TenBot.AddonReader.SavedVariables.Data
                 foreach (var key in keysArray) KeyList.Add(ParseKeys(key.Replace("DASH", "-")));
             }
         }
-
         public List<Keys> KeyList { get; } = new List<Keys>();
-
         public BindingHeader Header { get; }
 
         public Binding Binding { get; }
 
-
         public static KeyBind Parse(string keyBind)
         {
             var data = keyBind.Split(';');
-            if (data.Length < 2) return null;
 
-            if (data.Length > 3)
-                return new KeyBind(data[3], data[1], data[2]);
-            return null;
+            return data.Length < 4
+                ? new KeyBind(null, data[1], data[2])
+                : new KeyBind(data[3], data[1], data[2]);
         }
 
         private Keys ParseKeys(string key)
@@ -73,7 +68,7 @@ namespace TenBot.AddonReader.SavedVariables.Data
         {
             if (bindingHeader.StartsWith("BINDING_HEADER"))
                 bindingHeader = bindingHeader.Replace("BINDING_HEADER_", "");
-            
+
             return Enum.TryParse(bindingHeader, true, out BindingHeader bindingHeaderValue) ? bindingHeaderValue : 0;
         }
     }

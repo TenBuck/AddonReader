@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-
 using TenBot.AddonReader.SavedVariables.Parser;
 
 namespace TenBot.AddonReader.SavedVariables
@@ -19,25 +19,24 @@ namespace TenBot.AddonReader.SavedVariables
             var luaParser = LuaParser.Parse(File.ReadAllText(SavedVariablePath));
 
             SavedVariablesList = new List<SavedVariable>
-                                 {
-                                     new SavedVariable("FramesDB.profiles." + _profileName + ".addonConfig")
-                                         .SetValueFromLuaParser(luaParser),
-                                     new SavedVariable("FramesDB.profiles." + _profileName + ".frames")
-                                         .SetValueFromLuaParser(luaParser),
-                                     new SavedVariable("FramesDB.profiles." + _profileName + ".keybindings")
-                                         .SetValueFromLuaParser(luaParser),
-                                     new SavedVariable("FramesDB.profiles." + _profileName + ".actionBars")
-                                         .SetValueFromLuaParser(luaParser)
-                                 };
-            
+            {
+                new SavedVariable("FramesDB.profiles." + _profileName + ".addonConfig")
+                    .SetValueFromLuaParser(luaParser),
+                new SavedVariable("FramesDB.profiles." + _profileName + ".frames")
+                    .SetValueFromLuaParser(luaParser),
+                new SavedVariable("FramesDB.profiles." + _profileName + ".keybindings")
+                    .SetValueFromLuaParser(luaParser),
+                new SavedVariable("FramesDB.profiles." + _profileName + ".actionBars")
+                    .SetValueFromLuaParser(luaParser)
+            };
         }
 
-        public SavedVariable GetSavedVariableByName(string name)
+        public List<SavedVariable> SavedVariablesList { get; }
+
+        public SavedVariable GetByName(string name)
         {
-            return SavedVariablesList.Find(s => s.Name == name);
+            return SavedVariablesList.Find(s => s.Name == name) ??
+                   throw new InvalidOperationException(name + "saved variable not found");
         }
-        public List<SavedVariable> SavedVariablesList { get; private set; }
-
-
     }
 }

@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{D7239232-BC52-4643-AC0A-F532AB9D5A6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TenBotApp", "TenBotApp\TenBotApp.csproj", "{DCB2FBB1-657C-48D4-BC0B-7525F74A1B18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,10 +22,10 @@ Global
 		{635A7EFB-C7EC-46B1-8C7E-44741A173992}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{635A7EFB-C7EC-46B1-8C7E-44741A173992}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{635A7EFB-C7EC-46B1-8C7E-44741A173992}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D7239232-BC52-4643-AC0A-F532AB9D5A6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7239232-BC52-4643-AC0A-F532AB9D5A6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7239232-BC52-4643-AC0A-F532AB9D5A6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D7239232-BC52-4643-AC0A-F532AB9D5A6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCB2FBB1-657C-48D4-BC0B-7525F74A1B18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCB2FBB1-657C-48D4-BC0B-7525F74A1B18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCB2FBB1-657C-48D4-BC0B-7525F74A1B18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCB2FBB1-657C-48D4-BC0B-7525F74A1B18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

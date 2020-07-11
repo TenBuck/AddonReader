@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Serilog;
-
+﻿using System.Collections.Generic;
 using TenBot.AddonReader.Frames;
 using TenBot.AddonReader.SavedVariables;
 using TenBot.AddonReader.SavedVariables.Data;
@@ -11,52 +7,40 @@ namespace TenBot.AddonReader
 {
     public class AddonReaderMgr
     {
-        
-        private readonly AddonConfig _addonConfig;
+        private readonly SavedVariablesParser _savedVariablesParser;
+        private readonly WowWindow _wowWindow;
+        private List<ActionBarItem> _actionBarItems;
 
-        public readonly List<DataFrame> _frames;
-        private readonly List<ActionBarItem> _actionBarItems;
-        private readonly List<KeyBind> _keyBinds;
+        private AddonConfig _addonConfig;
+        private List<KeyBind> _keyBinds;
 
-        private readonly BitmapProvider _bitmapProvider;
 
-        public AddonReaderMgr(BitmapProvider bitmapProvider)
+        public AddonReaderMgr(SavedVariablesParser savedVariablesParser, WowWindow wowWindow)
+
         {
-            _bitmapProvider = bitmapProvider;
+            _savedVariablesParser = savedVariablesParser;
+            _wowWindow = wowWindow;
+        }
 
-            var savedVariables = new SavedVariablesParser("Govbailout", "Netherwind");
+        public BoxMgr BoxMgr { get; set; }
 
-            _addonConfig = new AddonConfig(savedVariables.GetSavedVariableByName("addonConfig").Fields);
+        public void Initialize()
+        {
+            _addonConfig = new AddonConfig(_savedVariablesParser.GetByName("addonConfig").Fields);
 
-            bitmapProvider.AddonRectangle = _addonConfig.AddonRectangle;
+            var savedVariables = _savedVariablesParser.SavedVariablesList;
 
-            var framesBuilder = new DataFramerBuilder(_addonConfig, _bitmapProvider);
-            _frames = savedVariables.GetSavedVariableByName("frames").Fields
-                .ConvertAll(framesBuilder.BuildFromParse)
-                .OrderBy(x => x.Index).ToList();
+            BoxMgr = new BoxMgr(_savedVariablesParser
+                    .GetByName("frames"),
+                _addonConfig, _wowWindow
+            );
 
-            _keyBinds = savedVariables.GetSavedVariableByName("keybindings").Fields
+
+            _keyBinds = _savedVariablesParser.GetByName("keybindings").Fields
                 .ConvertAll(KeyBind.Parse);
 
-            _actionBarItems = savedVariables.GetSavedVariableByName("actionBars").Fields
+            _actionBarItems = _savedVariablesParser.GetByName("actionBars").Fields
                 .ConvertAll(ActionBarItem.Parse);
-
         }
-
-
-        public List<DataFrame> GetDataFrames()
-        {
-            return _frames;
-        }
-
-        public List<DataFrame> GetPlayerDataFrames()
-        {
-            return _frames.FindAll(s => s.Name.Contains("player"));
-        }
-
-
-
-
-        
     }
 }

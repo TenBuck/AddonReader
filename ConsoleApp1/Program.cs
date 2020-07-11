@@ -1,22 +1,20 @@
 ﻿using System;
-
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-
 using Serilog;
-
 using TenBot;
 using TenBot.AddonReader;
-using TenBot.AddonReader.Frames;
+using TenBot.AddonReader.SavedVariables;
 
 namespace ConsoleApp1
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
             IServiceProvider ServiceProvider;
 
-            ServiceCollection services = new ServiceCollection();
+            var services = new ServiceCollection();
 
 
             ConfigureServices(services);
@@ -24,29 +22,25 @@ namespace ConsoleApp1
 
 
             var botController = ServiceProvider.GetService<BotController>();
-            botController.Start();
-
-
-
+            await botController.Start();
         }
 
         private static void ConfigureServices(IServiceCollection services)
         {
-
-
-           // Log.Logger = new LoggerConfiguration().CreateLogger();
+            Log.Logger = new LoggerConfiguration()
+               .WriteTo.File("log-.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
             // Configuration Builder
 
-           // services.AddSingleton<ILogger>(Log.Logger);
+            services.AddSingleton(Log.Logger);
 
 
             // WoW Related
-            services.AddTransient<BotController>();
-            services.AddTransient<WowWindow>();
+            services.AddSingleton<BotController>();
+            services.AddSingleton<WowWindow>();
+            services.AddSingleton(new SavedVariablesParser("Jetherenn", "Netherwind"));
             services.AddSingleton<BitmapProvider>();
             services.AddSingleton<AddonReaderMgr>();
-            
         }
     }
 }
-
