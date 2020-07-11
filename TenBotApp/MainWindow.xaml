@@ -14,24 +14,22 @@
                 <Button Click="StopBtn_Click">Stop</Button>
                 <Button >Reset</Button>
             </StackPanel>
-            <StackPanel>
-               <DockPanel>
-                   <Label>Name</Label>
-                   <TextBox></TextBox>
-               </DockPanel>
-                <DockPanel>
-                    <Label>Level</Label>
-                   <TextBox></TextBox>
-                </DockPanel>
-                   
-             
-
+            <StackPanel x:Name="PlayerPanel" Visibility="Hidden" >
+                <StackPanel.DataContext>
+                    <local:Player/>
+                </StackPanel.DataContext>
+                <TextBlock x:Name="Name" Text="{Binding Name}" />
+                <TextBlock x:Name="Level" Text="{Binding Level}"/>
+                <TextBlock x:Name="Health" Text="{Binding Health}"/>
+                <TextBlock x:Name="Durability" Text="{Binding Durability}"/>
+                <TextBlock x:Name="Freeslots" Text="{Binding Freeslots}"/>
+                
             </StackPanel>
 
 
         </StackPanel> 
       
-         
+       
 
          <ListView ItemsSource="{Binding ConsoleStrings}" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" HorizontalContentAlignment="Stretch" Margin="10,10,10,10"  >
              <ListView.ItemTemplate>

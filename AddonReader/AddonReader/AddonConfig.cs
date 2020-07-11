@@ -36,9 +36,11 @@ namespace TenBot
 
         public int MaxRow { get; private set; }
 
-        public int Rows => BoxCount / (MaxColumns + 1);
+        public int Rows => BoxCount / MaxColumns + 1;
 
         public int StringMaxChar { get; private set; }
+        
+        public int ErrorInt { get; set; }
 
 
         // Lua index starts at 1, 
@@ -46,7 +48,7 @@ namespace TenBot
         {
             var xOffset = CellSize / 2 - 1;
             var yOffset = CellSize / 2 - 1;
-            var x = xOffset + (index - 1 % MaxColumns) * CellDistance;
+            var x = xOffset + ((index - 1) % MaxColumns) * CellDistance;
             var y = yOffset + (index - 1) / MaxColumns * CellDistance;
 
 

@@ -15,7 +15,7 @@ namespace TenBotApp
     {
         private readonly ITextFormatter
             _textFormatter =
-                new CompactJsonFormatter(); //new MessageTemplateTextFormatter("{Timestamp} [{Level}] {Message}{Exception}");
+                new MessageTemplateTextFormatter("{Message:j}");
 
         public ConcurrentQueue<string> Events { get; } = new ConcurrentQueue<string>();
 

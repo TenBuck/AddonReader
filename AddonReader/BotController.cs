@@ -25,14 +25,19 @@ namespace TenBot
 
         public async Task Start(CancellationToken ct)
         {
+            _logger.Information("Starting bot...");
+
             if (_wowWindow.Handle == IntPtr.Zero)
             {
                 _logger.Error("WoW not found...");
                 return;
             }
-            _addonReaderMgr.Initialize();
+           
+
             try
             {
+                _addonReaderMgr.Initialize();
+
                 await Run(ct);
             }
             catch (OperationCanceledException)
@@ -40,9 +45,9 @@ namespace TenBot
                 _logger.Information("Bot Stopped");
               
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                _logger.Error(e.Message );
             }
         }
 
@@ -55,10 +60,16 @@ namespace TenBot
                // _wowWindow.SetForeground();
                // _wowWindow.MoveWindow(Point.Empty);
 
-                var unit = new UnitReader(_addonReaderMgr.BoxMgr, "player");
+                var player = new PlayerReader(_addonReaderMgr.BoxMgr);
+                var target = new TargetReader(_addonReaderMgr.BoxMgr, "target");
+                var targettarget = new TargetReader(_addonReaderMgr.BoxMgr, "targettarget");
+
+                Log.Logger.Information("{@Player}", player);
+                Log.Logger.Debug("{@Target}", target);
+                Log.Logger.Debug("{@TargetTarget}", targettarget);
 
                 await Task.Delay(250, ct);
-                Log.Logger.Information("{@unit}", unit);
+               
 
                 if (ct.IsCancellationRequested)
                 {
