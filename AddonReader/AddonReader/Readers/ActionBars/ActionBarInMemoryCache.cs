@@ -8,19 +8,23 @@ namespace TenBot.AddonReader.Readers.ActionBars
 {
     public class ActionBarInMemoryCache
     {
-        public Dictionary<int, ActionSlot> SpellActionBarById = new Dictionary<int, ActionSlot>();
+        private List<ActionBarItem> _actionBarItemList;
 
 
         // TODO: STOP pasting duplicates
         public ActionBarInMemoryCache(SavedVariablesParser parser)
-
         {
-            var luaItems = parser.GetByName("actionBars").Fields.ConvertAll(ActionBarItem.Parse).ToList();
+            _actionBarItemList = parser.GetByName("actionBars").Fields.ConvertAll(ActionBarItem.Parse).ToList();
+        }
 
+        public ActionSlot GetActionSlot(int spellId)
+        {
+            return _actionBarItemList.First(s => s.SpellId == spellId).ActionSlot;
+        }
 
-            foreach (var actionBarItem in luaItems)
-                if (!SpellActionBarById.ContainsKey(actionBarItem.SpellId))
-                    SpellActionBarById.Add(actionBarItem.SpellId, actionBarItem.ActionSlot);
+        public string GetSpellName(ActionSlot actionSlot)
+        {
+            return _actionBarItemList.First(s => s.ActionSlot == actionSlot).SpellName;
         }
     }
 }

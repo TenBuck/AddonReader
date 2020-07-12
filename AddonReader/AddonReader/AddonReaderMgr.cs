@@ -2,6 +2,7 @@
 using TenBot.AddonReader.Readers;
 using TenBot.AddonReader.Readers.ActionBars;
 using TenBot.AddonReader.Readers.Unit;
+using TenBot.AddonReader.Readers.Units;
 using TenBot.AddonReader.SavedVariables;
 
 namespace TenBot.AddonReader
@@ -46,6 +47,8 @@ namespace TenBot.AddonReader
             _logger.Debug("{@Target}", Target);
             _logger.Debug("{@TargetOfTarget}", TargetOfTarget);
             _logger.Debug("{@Position}", PositionReader);
+            _logger.Debug("{@Actionsn}", ActionsReader);
+            _logger.Debug("{@Aura}", AuraReader);
         }
     }
 }

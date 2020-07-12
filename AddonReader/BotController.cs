@@ -64,13 +64,13 @@ namespace TenBot
         {
             while (IsRunning)
             {
-                await Task.Delay(500);
+                
                 if (ct.IsCancellationRequested)
                 {
                     _logger.Information("cancelling task:");
                     ct.ThrowIfCancellationRequested();
                 }
-
+                await Task.Delay(250);
                 await _botStates.Peek()?.Update()!;
 
             }

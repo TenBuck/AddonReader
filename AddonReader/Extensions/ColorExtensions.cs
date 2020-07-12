@@ -27,7 +27,7 @@ namespace TenBot.Extensions
         // TODO: allow multiple bools in one box
         public static bool ToBool(this Color color)
         {
-            return (color.ToInt() == 100);
+            return (color.ToInt() == 1);
 
         }
     }

@@ -3,6 +3,7 @@ using TenBot.AddonReader;
 using TenBot.AddonReader.Readers;
 using TenBot.AddonReader.Readers.ActionBars;
 using TenBot.AddonReader.Readers.Unit;
+using TenBot.AddonReader.Readers.Units;
 
 namespace TenBot.Extensions.Services
 {

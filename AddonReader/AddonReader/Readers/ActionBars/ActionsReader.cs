@@ -8,17 +8,17 @@ namespace TenBot.AddonReader.Readers.ActionBars
     public class ActionsReader
     {
         private readonly BoxMgr _boxMgr;
-        private readonly Dictionary<int, ActionSlot> _actionSlotBySpellId;
+        private readonly ActionBarInMemoryCache _spellCache;
+        
 
         public ActionsReader(BoxMgr boxMgr, ActionBarInMemoryCache spellCache)
         {
             _boxMgr = boxMgr;
-            _actionSlotBySpellId = spellCache.SpellActionBarById;
+            _spellCache = spellCache;
         }
-
         public double GetSpellRemainingCooldown(int spellId)
         {
-            return _boxMgr.GetBoxByName("actionbars-SpellInfo_" + (int) _actionSlotBySpellId[spellId]).Color.ToInt();
+            return _boxMgr.GetBoxByName("actionbars-Cooldown_" + (int) _spellCache.GetActionSlot(spellId)).Color.ToInt();
         }
     }
 }

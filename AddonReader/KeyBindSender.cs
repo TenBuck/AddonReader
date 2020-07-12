@@ -20,7 +20,7 @@ namespace TenBot
 
         private readonly IKeyboardSimulator _simulator;
         private readonly WowWindow _wowWindow;
-        private readonly int SleepTime = SystemInformation.KeyboardDelay;
+        private readonly int SleepTime = 50;
 
         public KeyBindSender(WowWindow wowWindow, IKeyboardSimulator simulator,
             SavedVariablesParser parser, ILogger logger)
@@ -63,12 +63,12 @@ namespace TenBot
         {
             _wowWindow.SetForeground();
             _simulator.KeyPress(keyCode);
-            await Sleep(SystemInformation.KeyboardDelay);
+            await Sleep(190);
             while (!ct.IsCancellationRequested)
             {
                 _wowWindow.SetForeground();
                 _simulator.KeyUp(keyCode);
-                await Sleep(SystemInformation.KeyboardSpeed);
+                await Sleep(100);
             }
         }
 

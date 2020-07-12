@@ -4,6 +4,7 @@ using Serilog;
 using TenBot.AddonReader;
 using TenBot.AddonReader.Readers;
 using TenBot.AddonReader.Readers.Unit;
+using TenBot.AddonReader.Readers.Units;
 using TenBot.Game.WowTypes;
 
 namespace TenBot.Core.States.Combat
@@ -35,7 +36,7 @@ namespace TenBot.Core.States.Combat
             _logger.Information("MoveToTarget State: {IsInRange}",_playerReader.IsSpellInRange);
             if (_playerReader.IsSpellInRange)
             {
-                await _keyBindSender.SimulateKeyPress(KeyBinding.ACTIONBUTTON1);
+                await _keyBindSender.SimulateKeyPress(KeyBinding.ACTIONBUTTON2);
                 _logger.Information("Cooldown remaining: {CD}", _addonReaderMgr.ActionsReader.GetSpellRemainingCooldown(133));
             }
 
@@ -46,10 +47,11 @@ namespace TenBot.Core.States.Combat
             else
             {
                 await _keyBindSender.SimulateKeyPress(KeyBinding.INTERACTTARGET);
+                
             }
 
          
-            _logger.Debug("{@Player}", _playerReader);
+           
         }
     }
 }
