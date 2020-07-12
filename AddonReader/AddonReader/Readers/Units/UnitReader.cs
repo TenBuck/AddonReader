@@ -1,7 +1,7 @@
-﻿using TenBot.AddonReader.Frames;
+﻿using TenBot.AddonReader.Boxes;
 using TenBot.Extensions;
 
-namespace TenBot.AddonReader.Readers
+namespace TenBot.AddonReader.Readers.Unit
 {
     public class UnitReader
     {
@@ -9,7 +9,7 @@ namespace TenBot.AddonReader.Readers
 
         public readonly string UnitName;
 
-        public UnitReader(BoxMgr boxMgr, string unitName)
+        protected UnitReader(BoxMgr boxMgr, string unitName)
         {
             _boxMgr = boxMgr;
             UnitName = unitName + "-";

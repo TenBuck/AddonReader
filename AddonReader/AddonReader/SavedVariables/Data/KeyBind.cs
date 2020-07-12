@@ -66,6 +66,8 @@ namespace TenBot.AddonReader.SavedVariables.Data
                     return VirtualKeyCode.CONTROL;
                 case "ALT":
                     return VirtualKeyCode.MENU;
+                case "0":
+                    return VirtualKeyCode.VK_0;
                 case "1":
                     return VirtualKeyCode.VK_1;
                 case "2":

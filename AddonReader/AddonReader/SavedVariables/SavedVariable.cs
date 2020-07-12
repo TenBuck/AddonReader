@@ -11,7 +11,8 @@ namespace TenBot.AddonReader.SavedVariables
     public class SavedVariable
     {
         private readonly string _filePath =
-            @"C:\Program Files (x86)\World of Warcraft\_classic_\WTF\Account\FLAGMIRLOL\SavedVariables\TheFrames.lua";
+            @"C:\Program Files (x86)\World of Warcraft\_classic_\WTF\Account\1128842#2\SavedVariables\TheFrames.lua";
+           // @"C:\Program Files (x86)\World of Warcraft\_classic_\WTF\Account\FLAGMIRLOL\SavedVariables\TheFrames.lua";
 
         private readonly List<string> _path = new List<string>();
 

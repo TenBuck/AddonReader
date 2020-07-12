@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using GregsStack.InputSimulatorStandard.Native;
-using PInvoke;
 using Serilog;
 using TenBot.AddonReader;
-using TenBot.AddonReader.Readers;
-using TenBot.Game.WowTypes;
+using TenBot.Core;
+using TenBot.Core.States.Combat;
 
 namespace TenBot
 {
@@ -18,12 +14,14 @@ namespace TenBot
     {
         private readonly AddonReaderMgr _addonReaderMgr;
 
-
-        private readonly WowWindow _wowWindow;
-        private readonly ILogger _logger;
+        private readonly Stack<IBotState> _botStates = new Stack<IBotState>();
         private readonly KeyBindSender _keyBindSender;
+        private readonly ILogger _logger;
+        private readonly WowWindow _wowWindow;
+      
 
-        public BotController(AddonReaderMgr addonReaderMgr, WowWindow wowWindow, ILogger logger, KeyBindSender keyBindSender)
+        public BotController(AddonReaderMgr addonReaderMgr, WowWindow wowWindow, ILogger logger,
+            KeyBindSender keyBindSender)
         {
             _addonReaderMgr = addonReaderMgr;
             _wowWindow = wowWindow;
@@ -31,54 +29,50 @@ namespace TenBot
             _keyBindSender = keyBindSender;
         }
 
+        public bool IsRunning { get; set; }
+
         public async Task Start(CancellationToken ct)
         {
             _logger.Information("Starting bot...");
 
-            if (_wowWindow.Handle == IntPtr.Zero)
+            if (WowWindow.Handle == IntPtr.Zero)
             {
                 _logger.Error("WoW not found...");
                 return;
             }
+
+            _wowWindow.MoveWindow(Point.Empty);
+            _addonReaderMgr.Dump();
+            _botStates.Push(new AcquireTargetState(_logger, _botStates, _addonReaderMgr, _keyBindSender));
+
             try
             {
-                _addonReaderMgr.Initialize();
-
+                IsRunning = true;
                 await Run(ct);
             }
             catch (OperationCanceledException)
             {
                 _logger.Information("Bot Stopped");
-              
             }
             catch (Exception e)
             {
-                _logger.Error(e.Message );
+                _logger.Error(e.Message);
             }
         }
 
         private async Task Run(CancellationToken ct)
         {
-
-            
-            while (true)
+            while (IsRunning)
             {
-                var player = new PlayerReader(_addonReaderMgr.BoxMgr);
-                var target = new TargetReader(_addonReaderMgr.BoxMgr, "target");
-                var targettarget = new TargetReader(_addonReaderMgr.BoxMgr, "targettarget");
-
-                Log.Logger.Information("{@Player}", player);
-                Log.Logger.Debug("{@Target}", target);
-                Log.Logger.Debug("{@TargetTarget}", targettarget);
-
-                await Task.Delay(200);
+                await Task.Delay(500);
                 if (ct.IsCancellationRequested)
                 {
                     _logger.Information("cancelling task:");
                     ct.ThrowIfCancellationRequested();
                 }
 
-                
+                await _botStates.Peek()?.Update()!;
+
             }
         }
     }

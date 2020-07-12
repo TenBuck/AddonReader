@@ -1,15 +1,11 @@
-﻿using TenBot.Game.WowTypes;
+﻿using System.Linq;
+using System.Text.Json.Serialization;
+using TenBot.Game.WowTypes;
 
-namespace TenBot.AddonReader.SavedVariables.Data 
+namespace TenBot.AddonReader.SavedVariables.Data
 {
-    public class ActionBarItem 
+    public class ActionBarItem
     {
-        public int SpellId { get; }
-
-        public string SpellName { get; }
-
-        public ActionSlot ActionSlot { get; }
-
         public ActionBarItem(ActionSlot actionSlot, int spellId, string spellName)
         {
             ActionSlot = actionSlot;
@@ -21,11 +17,18 @@ namespace TenBot.AddonReader.SavedVariables.Data
         {
             var data = item.Split(';');
 
-            ActionSlot = (ActionSlot)int.Parse(data[0]);
+            ActionSlot = (ActionSlot) int.Parse(data[0]);
 
             SpellName = data[1];
             SpellId = int.Parse(data[2]);
+           
         }
+
+        public int SpellId { get; }
+
+        public string SpellName { get; }
+
+        public ActionSlot ActionSlot { get; }
 
         public static ActionBarItem Parse(string item)
         {

@@ -1,7 +1,4 @@
-﻿using System;
-using TenBot.AddonReader;
-
-namespace TenBot
+﻿namespace TenBot.AddonReader.Boxes
 {
     public class BoxBuilder
     {

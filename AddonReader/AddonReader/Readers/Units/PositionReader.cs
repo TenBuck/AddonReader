@@ -1,17 +1,17 @@
-﻿using TenBot.AddonReader.Frames;
+﻿using TenBot.AddonReader.Boxes;
 using TenBot.Extensions;
 
-namespace TenBot.AddonReader.Readers
+namespace TenBot.AddonReader.Readers.Unit
 {
     public class PositionReader
     {
         private readonly BoxMgr _boxMgr;
         private readonly string _unitName;
 
-        public PositionReader(BoxMgr boxMgr, string unitName)
+        public PositionReader(BoxMgr boxMgr)
         {
             _boxMgr = boxMgr;
-            _unitName = unitName + "-Position-";
+            _unitName ="player-Position-";
         }
         public double X => _boxMgr.GetBoxByName(_unitName + "X").Color.ToDouble();
         public double Y => _boxMgr.GetBoxByName(_unitName + "Y").Color.ToDouble();

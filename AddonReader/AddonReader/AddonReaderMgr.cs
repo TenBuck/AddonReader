@@ -1,69 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Serilog;
-using TenBot.AddonReader.Frames;
+﻿using Serilog;
+using TenBot.AddonReader.Readers;
+using TenBot.AddonReader.Readers.ActionBars;
+using TenBot.AddonReader.Readers.Unit;
 using TenBot.AddonReader.SavedVariables;
-using TenBot.AddonReader.SavedVariables.Data;
-using TenBot.Extensions;
-using TenBot.Game.WowTypes;
 
 namespace TenBot.AddonReader
 {
     public class AddonReaderMgr
     {
         private readonly ILogger _logger;
+
+
         private readonly SavedVariablesParser _savedVariablesParser;
-        private readonly WowWindow _wowWindow;
-        private List<ActionBarItem> _actionBarItems;
-        private readonly AddonConfigProvider _configProvider;
+        public readonly AuraReader AuraReader;
 
-
-        public AddonReaderMgr(AddonConfigProvider configProvider, SavedVariablesParser savedVariablesParser,
-            WowWindow wowWindow, ILogger logger)
+        public AddonReaderMgr(SavedVariablesParser savedVariablesParser,
+            ILogger logger, PlayerReader playerReader, TargetOfTarget targetOfTarget,
+            PositionReader positionReader, TargetReader target, ActionsReader actions, AuraReader auraReader)
 
         {
-            _configProvider = configProvider;
+            Player = playerReader;
+            TargetOfTarget = targetOfTarget;
+            PositionReader = positionReader;
+            Target = target;
             _savedVariablesParser = savedVariablesParser;
-            _wowWindow = wowWindow;
             _logger = logger;
+            AuraReader = auraReader;
+            ActionsReader = actions;
         }
 
+        public ActionsReader ActionsReader { get; }
 
-        public Dictionary<KeyBinding, KeyBind> KeysByBinding { get; private set; }
+        public PositionReader PositionReader { get; }
 
-        public BoxMgr BoxMgr { get; set; }
 
-        public void Initialize()
+        public PlayerReader Player { get; }
+        public TargetOfTarget TargetOfTarget { get; }
+
+        public TargetReader Target { get; }
+
+
+        public void Dump()
         {
-            InitializeBoxMgr();
-
-
-            KeysByBinding = _savedVariablesParser.GetByName("keybindings").Fields
-                .ConvertAll(KeyBind.Parse)
-                .ToDictionary(x => x.KeyBinding, x => x);
-            _logger.Information("Loaded Key Bindings from Saved Variables..");
-            _logger.Debug("{@KeysByBinding}", KeysByBinding);
-            
-
-
-            _actionBarItems = _savedVariablesParser.GetByName("actionBars").Fields
-                .ConvertAll(ActionBarItem.Parse);
-            _logger.Information("Loaded Action Bars from Saved Variables..");
-            _logger.Debug("{@ActionBarItem}", _actionBarItems);
-        }
-
-        private void InitializeBoxMgr()
-        {
-            BoxMgr = new BoxMgr(_savedVariablesParser
-                    .GetByName("frames"),
-                _configProvider, _wowWindow
-            );
-            _logger.Information("Loaded frames from Saved Variables..");
-
-            if (BoxMgr.GetBoxByName("ErrorStart").Color.ToInt() != _configProvider.ErrorInt &&
-                BoxMgr.GetBoxByName("ErrorEnd").Color.ToInt() != _configProvider.ErrorInt)
-                throw new Exception("could not locate addon frames...");
+            _logger.Debug("{@Player}", Player);
+            _logger.Debug("{@Target}", Target);
+            _logger.Debug("{@TargetOfTarget}", TargetOfTarget);
+            _logger.Debug("{@Position}", PositionReader);
         }
     }
 }

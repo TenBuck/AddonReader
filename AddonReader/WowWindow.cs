@@ -9,9 +9,9 @@ namespace TenBot
 {
     public class WowWindow
     {
-        public Process? Process => GetProcess("WowClassic");
+        public static Process? Process => GetProcess("WowClassic");
 
-        public IntPtr Handle => Process?.MainWindowHandle ?? IntPtr.Zero;
+        public static IntPtr Handle => Process?.MainWindowHandle ?? IntPtr.Zero;
 
         public Rectangle Rectangle
         {
@@ -38,7 +38,7 @@ namespace TenBot
             User32.SetForegroundWindow(Handle);
         }
 
-        public Point GetClientOriginPoint()
+        public static Point GetClientOriginPoint()
         {
             POINT p = new Point(0, 0);
             User32.ClientToScreen(Handle, ref p);
@@ -47,7 +47,7 @@ namespace TenBot
             return point;
         }
 
-        public Rectangle ClientToScreen(Rectangle rect)
+        public static  Rectangle ClientToScreen(Rectangle rect)
         {
             var p = GetClientOriginPoint();
 

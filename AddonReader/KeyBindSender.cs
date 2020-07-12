@@ -1,26 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using GregsStack.InputSimulatorStandard;
 using GregsStack.InputSimulatorStandard.Native;
-using PInvoke;
-using static PInvoke.User32;
+using Serilog;
+using TenBot.AddonReader.SavedVariables;
+using TenBot.AddonReader.SavedVariables.Data;
+using TenBot.Extensions;
+using TenBot.Game.WowTypes;
 
 namespace TenBot
 {
     public class KeyBindSender
     {
-        private const int SleepTime = 45;
+        private readonly Dictionary<KeyBinding, KeyBind> _keyBindingDictionary;
+        private readonly ILogger _logger;
 
-        private readonly InputSimulator _simulator;
+        private readonly IKeyboardSimulator _simulator;
         private readonly WowWindow _wowWindow;
+        private readonly int SleepTime = SystemInformation.KeyboardDelay;
 
-        public KeyBindSender(WowWindow wowWindow, InputSimulator simulator)
+        public KeyBindSender(WowWindow wowWindow, IKeyboardSimulator simulator,
+            SavedVariablesParser parser, ILogger logger)
         {
             _wowWindow = wowWindow;
             _simulator = simulator;
+            _logger = logger;
+
+            _keyBindingDictionary = parser.GetByName("keybindings").ParseKeyBind();
+            _logger.Information("Loaded Key Bindings from Saved Variables..");
+
+
+            _logger.Debug("{@KeysByBinding}", _keyBindingDictionary);
+        }
+
+        public async Task SimulateKeyPress(KeyBinding kb)
+        {
+            _logger.Information("Pressed {@Keys} for {KeyBinding}", _keyBindingDictionary[kb].KeyList, kb);
+            await SimulateKeyPress(_keyBindingDictionary[kb].KeyList);
         }
 
         public async Task SimulateKeyPress(IEnumerable<VirtualKeyCode> keys)
@@ -32,58 +51,34 @@ namespace TenBot
             foreach (var key in keys.Reverse()) await SimulateKeyUp(key);
         }
 
-        public async Task SimulateKeyPress(VirtualKeyCode key)
-        {
-            await SimulateKeyDown(key);
-            await Sleep(SleepTime);
-            await SimulateKeyDown(key);
-        }
 
+        
         public async Task SimulateKeyUp(VirtualKeyCode keyCode)
         {
             _wowWindow.SetForeground();
-            _simulator.Keyboard.KeyUp(keyCode);
-            await Sleep(SleepTime);
+            _simulator.KeyUp(keyCode);
+        }
+
+        public async Task SimulateHoldKey(VirtualKeyCode keyCode, CancellationToken ct)
+        {
+            _wowWindow.SetForeground();
+            _simulator.KeyPress(keyCode);
+            await Sleep(SystemInformation.KeyboardDelay);
+            while (!ct.IsCancellationRequested)
+            {
+                _wowWindow.SetForeground();
+                _simulator.KeyUp(keyCode);
+                await Sleep(SystemInformation.KeyboardSpeed);
+            }
         }
 
         public async Task SimulateKeyDown(VirtualKeyCode keyCode)
         {
             _wowWindow.SetForeground();
-            _simulator.Keyboard.KeyDown(keyCode);
-            await Sleep(SleepTime);
+            _simulator.KeyDown(keyCode);
         }
 
-        public async Task LeftClickMouse(Point p)
-        {
-            await SetCursorPos(p);
-            await Sleep(SleepTime);
-            _simulator.Mouse.LeftButtonClick();
-            await Sleep(SleepTime);
-            await SetCursorPos(Point.Empty);
-        }
 
-        public async Task RightClickMouse(Point p)
-        {
-            await SetCursorPos(p);
-            await Sleep(SleepTime);
-            _simulator.Mouse.RightButtonClick();
-            await Sleep(SleepTime);
-            await SetCursorPos(Point.Empty);
-        }
-
-        public async Task SetCursorPos(Point point)
-        {
-            _wowWindow.SetForeground();
-            await Sleep(SleepTime);
-            User32.SetCursorPos(point.X, point.Y);
-            await Sleep(SleepTime);
-        }
-
-        public static Point GetCursorPos()
-        {
-            return User32.GetCursorPos();
-        }
-        
         private static async Task Sleep(int ms)
         {
             await Task.Delay(ms);

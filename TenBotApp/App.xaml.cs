@@ -3,12 +3,15 @@ using GregsStack.InputSimulatorStandard;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Events;
-using Serilog.Filters;
 using TenBot;
 using TenBot.AddonReader;
+using TenBot.AddonReader.Boxes;
 using TenBot.AddonReader.Readers;
+using TenBot.AddonReader.Readers.ActionBars;
+using TenBot.AddonReader.Readers.Unit;
 using TenBot.AddonReader.SavedVariables;
-using TenBot.AddonReader.SavedVariables.Data;
+using TenBot.Extensions.Services;
+using ActionsReader = TenBot.AddonReader.Readers.ActionBars.ActionsReader;
 
 namespace TenBotApp
 {
@@ -17,24 +20,24 @@ namespace TenBotApp
     /// </summary>
     public partial class App : Application
     {
-        private ServiceProvider serviceProvider;
+        private ServiceProvider _serviceProvider;
 
         protected void OnStartup(object sender, StartupEventArgs e)
         {
-            
             var services = new ServiceCollection();
 
 
             ConfigureServices(services);
-            serviceProvider = services.BuildServiceProvider();
+            _serviceProvider = services.BuildServiceProvider();
 
-            var mainWindow = serviceProvider.GetService<MainWindow>();
+            var mainWindow = _serviceProvider.GetService<MainWindow>();
             mainWindow.Show();
         }
+
         private static void ConfigureServices(IServiceCollection services)
         {
             var sink = new InMemorySink();
-           
+
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -42,10 +45,10 @@ namespace TenBotApp
                 .WriteTo.Sink(sink, LogEventLevel.Information)
                 .CreateLogger();
 
-           
+
             // Configuration Builder
 
-            services.AddSingleton<ILogger>(Log.Logger);
+            services.AddSingleton(Log.Logger);
             services.AddSingleton(sink);
 
 
@@ -53,22 +56,32 @@ namespace TenBotApp
             services.AddSingleton<MainWindow>();
 
             // WoW Related
-            
-            services.AddTransient<BotController>();
+
+            //saved variables
+          
+           services.AddSingleton<ActionBarInMemoryCache>();
+
+            services.AddSingleton<BotController>();
             services.AddSingleton<WowWindow>();
-            services.AddSingleton<PlayerReader>();
+           
             services.AddSingleton<AddonConfigProvider>();
-            
+
             services.AddSingleton<KeyBindSender>();
-            services.AddSingleton<InputSimulator>();
+
             
-            services.AddSingleton<SavedVariablesParser>(s=> new SavedVariablesParser("Jetherenn", "Netherwind"));
+            services.AddSingleton<SavedVariablesParser>(s => new SavedVariablesParser("Licella", "Netherwind"));
             services.AddSingleton<BitmapProvider>();
-            services.AddSingleton<AddonReaderMgr>();
+            services.AddSingleton<BoxMgr>();
+            services.AddSingleton<BoxBuilder>();
+
+
+            services.AddReaders();
+
+          
+
+            // Input Related
+            services.AddSingleton<IMouseSimulator,MouseSimulator>();
+            services.AddSingleton<IKeyboardSimulator, KeyboardSimulator>();
         }
     }
-
-
-
-  
 }

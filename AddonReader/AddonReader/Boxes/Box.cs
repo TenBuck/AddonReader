@@ -2,11 +2,10 @@
 
 using System.Drawing;
 using Serilog;
-using TenBot.AddonReader;
 
 #endregion
 
-namespace TenBot
+namespace TenBot.AddonReader.Boxes
 {
     public class Box
     {

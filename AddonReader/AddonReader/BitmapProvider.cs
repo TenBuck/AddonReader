@@ -11,15 +11,15 @@ namespace TenBot.AddonReader
 
         private readonly Stopwatch _stopWatch = new Stopwatch();
         private Rectangle _rectangle;
-
-        public BitmapProvider(Rectangle rectangle)
+        public BitmapProvider(AddonConfigProvider provider)
         {
-             _rectangle = rectangle;
+            _rectangle = provider.AddonRectangle;
             _bitmap = new Bitmap(_rectangle.Width, _rectangle.Height);
         }
 
         public Bitmap GetBitmap()
         {
+            if (_stopWatch.IsRunning == false) _rectangle = WowWindow.ClientToScreen(_rectangle);
             if (_stopWatch.IsRunning && _stopWatch.ElapsedMilliseconds <= Timeout) return _bitmap;
 
             using (var graphics = Graphics.FromImage(_bitmap))
