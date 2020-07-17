@@ -14,13 +14,16 @@ namespace TenBot.AddonReader.Readers.Unit
             _boxMgr = boxMgr;
             UnitName = unitName + "-";
         }
+
         public string Name => _boxMgr.GetBoxListByName(UnitName + "Name").BoxesToString();
-        public int Health => _boxMgr.GetBoxByName(UnitName + "Health").Color.ToInt();
-        public int HealthMax => _boxMgr.GetBoxByName(UnitName + "HealthMax").Color.ToInt();
-        public int Power => _boxMgr.GetBoxByName(UnitName + "Power").Color.ToInt();
-        public int PowerMax => _boxMgr.GetBoxByName(UnitName + "PowerMax").Color.ToInt();
-        public int Level => _boxMgr.GetBoxByName(UnitName + "Level").Color.ToInt();
-        public bool IsDead => _boxMgr.GetBoxByName(UnitName + "IsDead").Color.ToBool();
-        public int MovingSpeed => _boxMgr.GetBoxByName(UnitName + "MovingSpeed").Color.ToInt();
+        public int Health => _boxMgr.GetBoxByName(UnitName + "Health").ToInt();
+        public int HealthPercent => Health / (HealthMax != 0 ? HealthMax : int.MaxValue) * 100;
+        public int HealthMax => _boxMgr.GetBoxByName(UnitName + "HealthMax").ToInt();
+        public int Power => _boxMgr.GetBoxByName(UnitName + "Power").ToInt();
+        public int PowerPercent => (int) ((double)Power / (PowerMax != 0 ? PowerMax : int.MaxValue) * 100.0);
+        public int PowerMax => _boxMgr.GetBoxByName(UnitName + "PowerMax").ToInt();
+        public int Level => _boxMgr.GetBoxByName(UnitName + "Level").ToInt();
+        public bool IsDead => Health == 0; //_boxMgr.GetBoxByName(UnitName + "IsDead").ToBool();
+        public int MovingSpeed => _boxMgr.GetBoxByName(UnitName + "MovingSpeed").ToInt();
     }
 }

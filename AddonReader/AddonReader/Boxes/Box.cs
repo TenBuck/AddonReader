@@ -2,6 +2,7 @@
 
 using System.Drawing;
 using Serilog;
+using TenBot.Extensions;
 
 #endregion
 
@@ -9,13 +10,7 @@ namespace TenBot.AddonReader.Boxes
 {
     public class Box
     {
-        public enum DataFrameType
-        {
-            Int,
-            Bool,
-            Decimal,
-            Chars
-        }
+        public const int MaxInt = 16777215;
 
         private readonly BitmapProvider? _bitmapProvider;
 
@@ -25,6 +20,16 @@ namespace TenBot.AddonReader.Boxes
             Index = index;
             Point = p;
             Name = name;
+        }
+
+        public Box(string value)
+        {
+            var paramStrings = value.Split(";");
+
+            Index = int.Parse(paramStrings[0]);
+
+            Name = paramStrings[2];
+            Point = Point.Empty;
         }
 
         public Color Color
@@ -41,20 +46,11 @@ namespace TenBot.AddonReader.Boxes
 
         public string Name { get; }
 
-
         public Point Point { get; set; }
 
-
-        public static Box Parse(string value)
+        public bool HasValue()
         {
-            var paramStrings = value.Split(";");
-
-            var index = int.Parse(paramStrings[0]);
-
-            var name = paramStrings[2];
-            var p = Point.Empty;
-
-            return new Box(index, p, name, null);
+            return !this.ToInt().Equals(MaxInt);
         }
     }
 }

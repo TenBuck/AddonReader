@@ -21,17 +21,16 @@ namespace TenBot.AddonReader.SavedVariables.Data
             RAIDTARGET
         }
 
-        public KeyBind(List<VirtualKeyCode> keyList, KeyBinding keyBinding, BindingHeader header)
+        public KeyBind(List<VirtualKeyCode> keyList, KeyBinding keyBinding)
         {
             KeyList = keyList;
             KeyBinding = keyBinding;
-            Header = header;
         }
 
-        public KeyBind(string? keys, string name, string header)
+        public KeyBind(string? keys, string name)
         {
             KeyBinding = ParseBinding(name);
-            Header = ParseHeader(header);
+
 
             if (keys != null)
             {
@@ -43,7 +42,7 @@ namespace TenBot.AddonReader.SavedVariables.Data
 
 
         public List<VirtualKeyCode> KeyList { get; } = new List<VirtualKeyCode>();
-        public BindingHeader Header { get; }
+
 
         public KeyBinding KeyBinding { get; }
 
@@ -52,8 +51,8 @@ namespace TenBot.AddonReader.SavedVariables.Data
             var data = keyBind.Split(';');
 
             return data.Length < 4
-                ? new KeyBind(null, data[1], data[2])
-                : new KeyBind(data[3], data[1], data[2]);
+                ? new KeyBind(null, data[1])
+                : new KeyBind(data[3], data[1]);
         }
 
         private static VirtualKeyCode ParseKeys(string key)
@@ -96,14 +95,6 @@ namespace TenBot.AddonReader.SavedVariables.Data
         private static KeyBinding ParseBinding(string binding)
         {
             return Enum.TryParse(binding, true, out KeyBinding bindingValue) ? bindingValue : 0;
-        }
-
-        private static BindingHeader ParseHeader(string bindingHeader)
-        {
-            if (bindingHeader.StartsWith("BINDING_HEADER"))
-                bindingHeader = bindingHeader.Replace("BINDING_HEADER_", "");
-
-            return Enum.TryParse(bindingHeader, true, out BindingHeader bindingHeaderValue) ? bindingHeaderValue : 0;
         }
     }
 }

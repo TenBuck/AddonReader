@@ -10,6 +10,7 @@ namespace TenBot.AddonReader.Readers
     {
         private readonly BoxMgr _boxMgr;
         private readonly ILogger _logger;
+
         public AuraReader(ILogger logger, BoxMgr boxMgr)
         {
             _logger = logger;
@@ -17,17 +18,18 @@ namespace TenBot.AddonReader.Readers
         }
 
         public int BuffCount =>
-            _boxMgr.GetBoxListByName("aura-buff-count").FindAll(s => s.Color.ToInt() != 16777215).Count;
+            _boxMgr.GetBoxByName("aura-buff-count").ToInt();
 
-        public int DebuffCount =>
-            _boxMgr.GetBoxListByName("aura-debuff-count")
-                .Count(s => s.Color.ToInt() != 16777215);
+        public int DebuffCount => _boxMgr.GetBoxByName("aura-debuff-count").ToInt();
+         
 
-        public List<int> Buffs => _boxMgr.GetBoxListByName("aura-buff_").ConvertAll(s => s.Color.ToInt())
-            .Where(s => s != 16777215).ToList();
+        public List<int> Buffs => _boxMgr.GetBoxListByName("aura-buff_")
+            .Where(box => box.HasValue())
+            .Select(box => box.ToInt()).ToList();
 
 
-        public List<int> Debuffs => _boxMgr.GetBoxListByName("aura-debuff_").ConvertAll(s => s.Color.ToInt())
-            .Where(s => s != 16777215).ToList();
+        public List<int> Debuffs => _boxMgr.GetBoxListByName("aura-debuff_")
+            .Where(box => box.HasValue())
+            .Select(box => box.ToInt()).ToList();
     }
 }

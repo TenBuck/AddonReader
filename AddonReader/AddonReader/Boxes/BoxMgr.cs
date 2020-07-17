@@ -7,7 +7,7 @@ using TenBot.Extensions;
 
 namespace TenBot.AddonReader.Boxes
 {
-    public class BoxMgr
+    public class BoxMgr : IDataProvider
     {
         private readonly Dictionary<string, List<Box>> _boxDictionary = new Dictionary<string, List<Box>>();
         private readonly SavedVariablesParser _savedVariablesParser;
@@ -36,14 +36,6 @@ namespace TenBot.AddonReader.Boxes
             return true;
         }
 
-        public void Reset()
-        {
-            _boxDictionary.Clear();
-            _boxes = _savedVariablesParser.GetByName("frames").Fields.ConvertAll(Box.Parse)
-                .OrderBy(s => s.Index)
-                .ToList();
-        }
-
         public Box GetBoxByName(string name)
         {
             if (!_boxDictionary.ContainsKey(name))
@@ -62,6 +54,16 @@ namespace TenBot.AddonReader.Boxes
                         .FindAll(s => s.Name.Contains(name)));
 
             return _boxDictionary[name];
+        }
+
+        public void Refresh()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dump()
+        {
+            _logger.Information("Boxes : {@Boxes}", _boxes);
         }
     }
 }

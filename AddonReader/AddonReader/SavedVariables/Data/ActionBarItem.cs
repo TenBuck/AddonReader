@@ -1,28 +1,28 @@
-﻿using System.Linq;
-using System.Text.Json.Serialization;
+﻿using System;
+using System.Threading.Tasks;
 using TenBot.Game.WowTypes;
 
 namespace TenBot.AddonReader.SavedVariables.Data
 {
     public class ActionBarItem
     {
-        public ActionBarItem(ActionSlot actionSlot, int spellId, string spellName)
-        {
-            ActionSlot = actionSlot;
-            SpellId = spellId;
-            SpellName = spellName;
-        }
+        private readonly KeyBinding _keyBinding;
+        private readonly KeyBindSender _keyBindSender;
 
-        public ActionBarItem(string item)
+        public ActionBarItem(string item, KeyBindSender keyBindSender)
         {
+            _keyBindSender = keyBindSender;
             var data = item.Split(';');
 
             ActionSlot = (ActionSlot) int.Parse(data[0]);
 
             SpellName = data[1];
             SpellId = int.Parse(data[2]);
-           
+            SpellCost = data.Length < 4 ? 0 : int.Parse(data[3]);
+            _keyBinding = (KeyBinding) Enum.Parse(typeof(KeyBinding), ActionSlot.ToString(), true);
         }
+
+        public int SpellCost { get; }
 
         public int SpellId { get; }
 
@@ -30,9 +30,9 @@ namespace TenBot.AddonReader.SavedVariables.Data
 
         public ActionSlot ActionSlot { get; }
 
-        public static ActionBarItem Parse(string item)
+        public async Task Send()
         {
-            return new ActionBarItem(item);
+            await _keyBindSender.SimulateKeyPress(_keyBinding);
         }
     }
 }

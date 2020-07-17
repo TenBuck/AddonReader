@@ -2,64 +2,56 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using GregsStack.InputSimulatorStandard;
 using GregsStack.InputSimulatorStandard.Native;
 using Serilog;
 using TenBot.AddonReader.SavedVariables;
-using TenBot.AddonReader.SavedVariables.Data;
-using TenBot.Extensions;
 using TenBot.Game.WowTypes;
 
 namespace TenBot
 {
     public class KeyBindSender
     {
-        private readonly Dictionary<KeyBinding, KeyBind> _keyBindingDictionary;
-        private readonly ILogger _logger;
+        private readonly InMemoryKeyBinds _keyBinds;
 
         private readonly IKeyboardSimulator _simulator;
         private readonly WowWindow _wowWindow;
-        private readonly int SleepTime = 50;
+        private readonly int SleepTime = 100;
 
-        public KeyBindSender(WowWindow wowWindow, IKeyboardSimulator simulator,
-            SavedVariablesParser parser, ILogger logger)
+        public KeyBindSender(WowWindow wowWindow, IKeyboardSimulator simulator, InMemoryKeyBinds keyBinds,
+            ILogger logger)
         {
             _wowWindow = wowWindow;
             _simulator = simulator;
-            _logger = logger;
-
-            _keyBindingDictionary = parser.GetByName("keybindings").ParseKeyBind();
-            _logger.Information("Loaded Key Bindings from Saved Variables..");
-
-
-            _logger.Debug("{@KeysByBinding}", _keyBindingDictionary);
+            _keyBinds = keyBinds;
         }
 
         public async Task SimulateKeyPress(KeyBinding kb)
         {
-            _logger.Information("Pressed {@Keys} for {KeyBinding}", _keyBindingDictionary[kb].KeyList, kb);
-            await SimulateKeyPress(_keyBindingDictionary[kb].KeyList);
+            _wowWindow.SetForeground();
+
+            await SimulateKeyPress(_keyBinds.GetKeyBind(kb));
         }
 
-        public async Task SimulateKeyPress(IEnumerable<VirtualKeyCode> keys)
+        private async Task SimulateKeyPress(IEnumerable<VirtualKeyCode> keys)
         {
+            Log.Logger.Information("Pressing {@keys}", keys);
+            _wowWindow.SetForeground();
             foreach (var key in keys) await SimulateKeyDown(key);
 
             await Sleep(SleepTime);
 
             foreach (var key in keys.Reverse()) await SimulateKeyUp(key);
+            await Sleep(SleepTime);
         }
 
 
-        
-        public async Task SimulateKeyUp(VirtualKeyCode keyCode)
+        private async Task SimulateKeyUp(VirtualKeyCode keyCode)
         {
-            _wowWindow.SetForeground();
             _simulator.KeyUp(keyCode);
         }
 
-        public async Task SimulateHoldKey(VirtualKeyCode keyCode, CancellationToken ct)
+        private async Task SimulateHoldKey(VirtualKeyCode keyCode, CancellationToken ct)
         {
             _wowWindow.SetForeground();
             _simulator.KeyPress(keyCode);
@@ -72,14 +64,13 @@ namespace TenBot
             }
         }
 
-        public async Task SimulateKeyDown(VirtualKeyCode keyCode)
+        private async Task SimulateKeyDown(VirtualKeyCode keyCode)
         {
-            _wowWindow.SetForeground();
             _simulator.KeyDown(keyCode);
         }
 
 
-        private static async Task Sleep(int ms)
+        private async Task Sleep(int ms)
         {
             await Task.Delay(ms);
         }

@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using GregsStack.InputSimulatorStandard;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
 using Serilog.Events;
 using TenBot;
@@ -58,8 +59,9 @@ namespace TenBotApp
             // WoW Related
 
             //saved variables
-          
-           services.AddSingleton<ActionBarInMemoryCache>();
+
+            services.AddSingleton<InMemoryActionBars>();
+            services.AddSingleton<InMemoryKeyBinds>();
 
             services.AddSingleton<BotController>();
             services.AddSingleton<WowWindow>();

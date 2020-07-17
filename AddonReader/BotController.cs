@@ -16,16 +16,15 @@ namespace TenBot
 
         private readonly Stack<IBotState> _botStates = new Stack<IBotState>();
         private readonly KeyBindSender _keyBindSender;
-        private readonly ILogger _logger;
         private readonly WowWindow _wowWindow;
-      
 
-        public BotController(AddonReaderMgr addonReaderMgr, WowWindow wowWindow, ILogger logger,
+
+        public BotController(AddonReaderMgr addonReaderMgr, WowWindow wowWindow,
             KeyBindSender keyBindSender)
         {
             _addonReaderMgr = addonReaderMgr;
             _wowWindow = wowWindow;
-            _logger = logger;
+
             _keyBindSender = keyBindSender;
         }
 
@@ -33,17 +32,17 @@ namespace TenBot
 
         public async Task Start(CancellationToken ct)
         {
-            _logger.Information("Starting bot...");
+            Log.Logger.Information("Starting bot...");
 
-            if (WowWindow.Handle == IntPtr.Zero)
+            if (_wowWindow.Handle == IntPtr.Zero)
             {
-                _logger.Error("WoW not found...");
+                Log.Logger.Error("WoW not found...");
                 return;
             }
 
             _wowWindow.MoveWindow(Point.Empty);
             _addonReaderMgr.Dump();
-            _botStates.Push(new AcquireTargetState(_logger, _botStates, _addonReaderMgr, _keyBindSender));
+            _botStates.Push(new AcquireTargetState(_botStates, _addonReaderMgr, _keyBindSender));
 
             try
             {
@@ -52,11 +51,12 @@ namespace TenBot
             }
             catch (OperationCanceledException)
             {
-                _logger.Information("Bot Stopped");
+                IsRunning = false;
+                Log.Logger.Information("Bot Stopped");
             }
             catch (Exception e)
             {
-                _logger.Error(e.Message);
+                Log.Logger.Error(e.Message);
             }
         }
 
@@ -64,15 +64,15 @@ namespace TenBot
         {
             while (IsRunning)
             {
-                
                 if (ct.IsCancellationRequested)
                 {
-                    _logger.Information("cancelling task:");
+                    Log.Logger.Information("cancelling task:");
                     ct.ThrowIfCancellationRequested();
                 }
-                await Task.Delay(250);
-                await _botStates.Peek()?.Update()!;
 
+                await Task.Delay(300);
+                _addonReaderMgr.Dump();
+                await _botStates.Peek()?.Update()!;
             }
         }
     }
