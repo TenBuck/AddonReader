@@ -1,7 +1,7 @@
 ﻿using TenBot.AddonReader.Boxes;
 using TenBot.Extensions;
 
-namespace TenBot.AddonReader.Readers.Unit
+namespace TenBot.AddonReader.Readers.Units
 {
     public class UnitReader
     {
@@ -17,7 +17,7 @@ namespace TenBot.AddonReader.Readers.Unit
 
         public string Name => _boxMgr.GetBoxListByName(UnitName + "Name").BoxesToString();
         public int Health => _boxMgr.GetBoxByName(UnitName + "Health").ToInt();
-        public int HealthPercent => Health / (HealthMax != 0 ? HealthMax : int.MaxValue) * 100;
+        public int HealthPercent => (int)((double)Health / (HealthMax != 0 ? HealthMax : int.MaxValue) * 100.0);
         public int HealthMax => _boxMgr.GetBoxByName(UnitName + "HealthMax").ToInt();
         public int Power => _boxMgr.GetBoxByName(UnitName + "Power").ToInt();
         public int PowerPercent => (int) ((double)Power / (PowerMax != 0 ? PowerMax : int.MaxValue) * 100.0);

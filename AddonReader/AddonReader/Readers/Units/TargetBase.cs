@@ -1,7 +1,7 @@
 ﻿using TenBot.AddonReader.Boxes;
 using TenBot.Extensions;
 
-namespace TenBot.AddonReader.Readers.Unit
+namespace TenBot.AddonReader.Readers.Units
 {
     public class TargetBase : UnitReader
     {

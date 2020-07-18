@@ -2,18 +2,38 @@
 using System.Threading.Tasks;
 using GregsStack.InputSimulatorStandard;
 using PInvoke;
+using TenBot.Extensions;
 
 namespace TenBot
 {
     public class MouseServices
     {
+        private const int SleepTime = 100;
         private readonly IMouseSimulator _mouseSimulator;
         private readonly WowWindow _wowWindow;
-        private int SleepTime = 100;
-        public MouseServices(IInputSimulator inputSimulator, WowWindow _wowWindow)
+
+        public MouseServices(IMouseSimulator mouseSimulator, WowWindow _wowWindow)
         {
             this._wowWindow = _wowWindow;
-            _mouseSimulator = inputSimulator.Mouse;
+            _mouseSimulator = mouseSimulator;
+        }
+
+        public async Task RightClickMiddle(double radians)
+        {
+            _wowWindow.SetForeground();
+            var pixel = radians / 0.03927 * 10;
+
+            var p = _wowWindow.ClientRectangle.Middle();
+            await SetCursorPos(p);
+            _wowWindow.SetForeground();
+            await Sleep(100);
+            _mouseSimulator.RightButtonDown();
+            await Sleep(100);
+            _mouseSimulator.MoveMouseBy((int)pixel, 0);
+            await Sleep(100);
+            _mouseSimulator.RightButtonUp();
+            await Sleep(3000);
+            
         }
 
         public async Task LeftClickMouse(Point p)
@@ -47,7 +67,7 @@ namespace TenBot
             return User32.GetCursorPos();
         }
 
-        private async Task Sleep(int ms)
+        private static async Task Sleep(int ms)
         {
             await Task.Delay(ms);
         }

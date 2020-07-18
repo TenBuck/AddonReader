@@ -1,18 +1,12 @@
 ﻿using System.Windows;
 using GregsStack.InputSimulatorStandard;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
 using Serilog.Events;
 using TenBot;
 using TenBot.AddonReader;
-using TenBot.AddonReader.Boxes;
-using TenBot.AddonReader.Readers;
-using TenBot.AddonReader.Readers.ActionBars;
-using TenBot.AddonReader.Readers.Unit;
 using TenBot.AddonReader.SavedVariables;
 using TenBot.Extensions.Services;
-using ActionsReader = TenBot.AddonReader.Readers.ActionBars.ActionsReader;
 
 namespace TenBotApp
 {
@@ -56,34 +50,30 @@ namespace TenBotApp
             // UI
             services.AddSingleton<MainWindow>();
 
+
+            // Input Related
+            services.AddSingleton<IMouseSimulator, MouseSimulator>();
+            services.AddSingleton<IKeyboardSimulator, KeyboardSimulator>();
+
             // WoW Related
-
-            //saved variables
-
             services.AddSingleton<InMemoryActionBars>();
             services.AddSingleton<InMemoryKeyBinds>();
 
             services.AddSingleton<BotController>();
             services.AddSingleton<WowWindow>();
-           
-            services.AddSingleton<AddonConfigProvider>();
+
 
             services.AddSingleton<KeyBindSender>();
 
-            
-            services.AddSingleton<SavedVariablesParser>(s => new SavedVariablesParser("Licella", "Netherwind"));
+
             services.AddSingleton<BitmapProvider>();
-            services.AddSingleton<BoxMgr>();
-            services.AddSingleton<BoxBuilder>();
 
 
             services.AddReaders();
+            services.AddPlayer();
+
 
           
-
-            // Input Related
-            services.AddSingleton<IMouseSimulator,MouseSimulator>();
-            services.AddSingleton<IKeyboardSimulator, KeyboardSimulator>();
         }
     }
 }

@@ -1,43 +1,40 @@
-﻿using Serilog;
-using TenBot.AddonReader.Boxes;
-using TenBot.AddonReader.SavedVariables;
+﻿using TenBot.AddonReader.Boxes;
 using TenBot.Extensions;
+using TenBot.Game.WowTypes;
 
-namespace TenBot.AddonReader.Readers.ActionBars
+namespace TenBot.AddonReader.Readers
 {
     public class ActionsReader
     {
-        private readonly InMemoryActionBars _actionBars;
-
         private readonly BoxMgr _boxMgr;
 
-
-        public ActionsReader(BoxMgr boxMgr, InMemoryActionBars actionBars)
+        public ActionsReader(BoxMgr boxMgr)
         {
             _boxMgr = boxMgr;
-            _actionBars = actionBars;
         }
 
+        public SpellFailedCode FailedCode => (SpellFailedCode) _boxMgr.GetBoxByName("spellFailed-code").ToInt();
 
-        public double GetSpellRemainingCooldown(int spellId)
+        public int LastFailedSpellId => _boxMgr.GetBoxByName("spellFailed-spellId").ToInt();
+
+        public double GetSpellRemainingCooldown(ActionSlot actionSlot)
         {
-            var actionSlot = _actionBars.GetActionSlot(spellId);
             return _boxMgr.GetBoxByName("actionbars-Cooldown_" + (int) actionSlot).ToInt();
         }
 
-        public bool IsSpellReady(int spellId)
+        public bool IsSpellReady(ActionSlot actionSlot)
         {
-            if (_boxMgr.GetBoxByName("actionbars-Cooldown_" + (int) _actionBars.GetActionSlot(spellId))
+            if (_boxMgr.GetBoxByName("actionbars-Cooldown_" + (int) actionSlot)
                 .HasValue()) return false;
 
-            return GetSpellRemainingCooldown(spellId) > 0;
+            return GetSpellRemainingCooldown(actionSlot) > 0;
         }
 
-        public bool IsSpellInRange(int spellId)
+        public bool IsSpellInRange(ActionSlot actionSlot)
         {
-            var range = _boxMgr.GetBoxByName("actionbars-IsInRange_" + (int) _actionBars.GetActionSlot(spellId))
+            var range = _boxMgr.GetBoxByName("actionbars-IsInRange_" + (int) actionSlot)
                 .ToBool();
-            Log.Logger.Information("In Range: {SpellID}: {InRange}", spellId, range);
+
             return range;
         }
     }

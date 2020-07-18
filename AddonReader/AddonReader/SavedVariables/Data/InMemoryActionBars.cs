@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Serilog;
+using TenBot.AddonReader.Readers;
 using TenBot.AddonReader.SavedVariables.Data;
 using TenBot.Game.WowTypes;
 
@@ -9,17 +9,19 @@ namespace TenBot.AddonReader.SavedVariables
 {
     public class InMemoryActionBars : IDataProvider
     {
+        private readonly ActionsReader _actionsReader;
         private readonly KeyBindSender _keyBindSender;
 
         private readonly SavedVariablesParser _parser;
 
-        public InMemoryActionBars(SavedVariablesParser parser, KeyBindSender keyBindSender)
+        public InMemoryActionBars(SavedVariablesParser parser, KeyBindSender keyBindSender, ActionsReader actionsReader)
         {
             _parser = parser;
             _keyBindSender = keyBindSender;
+            _actionsReader = actionsReader;
 
             ActionBarItems = parser.GetByName("actionBars").Fields
-                .ConvertAll(s => new ActionBarItem(s, keyBindSender))
+                .ConvertAll(s => new ActionBarItem(s, keyBindSender, _actionsReader))
                 .ToList();
         }
 
@@ -28,7 +30,7 @@ namespace TenBot.AddonReader.SavedVariables
         public void Refresh()
         {
             ActionBarItems = _parser.GetByName("actionBars").Fields
-                .ConvertAll(s => new ActionBarItem(s, _keyBindSender))
+                .ConvertAll(s => new ActionBarItem(s, _keyBindSender, _actionsReader))
                 .ToList();
         }
 
@@ -51,12 +53,6 @@ namespace TenBot.AddonReader.SavedVariables
         {
             return ActionBarItems.Find(s => s.SpellId == spellId);
         }
-
-        public KeyBinding GetKeyBinding(ActionSlot actionSlot)
-        {
-            return (KeyBinding) Enum.Parse(typeof(KeyBinding), actionSlot.ToString(), true);
-        }
-
 
         public bool Contains(int spellId)
         {

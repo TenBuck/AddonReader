@@ -9,7 +9,10 @@
         {
             _addonConfig = config;
             _bitmapProvider = bitmapProvider;
+           
         }
+
+        public int ErrorInt => _addonConfig.ErrorInt;
 
         public Box BuildFromParse(string dataFrame)
         {

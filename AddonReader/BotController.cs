@@ -5,33 +5,36 @@ using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
 using TenBot.AddonReader;
+using TenBot.AddonReader.Boxes;
 using TenBot.Core;
 using TenBot.Core.States.Combat;
+using TenBot.Core.WowPlayer;
 
 namespace TenBot
 {
     public class BotController
     {
-        private readonly AddonReaderMgr _addonReaderMgr;
-
         private readonly Stack<IBotState> _botStates = new Stack<IBotState>();
         private readonly KeyBindSender _keyBindSender;
+        private readonly BoxMgr _boxMgr;
+        private readonly Player _player;
         private readonly WowWindow _wowWindow;
 
 
-        public BotController(AddonReaderMgr addonReaderMgr, WowWindow wowWindow,
-            KeyBindSender keyBindSender)
+        public BotController(Player player, WowWindow wowWindow,
+            KeyBindSender keyBindSender, BoxMgr boxMgr)
         {
-            _addonReaderMgr = addonReaderMgr;
+            _player = player;
             _wowWindow = wowWindow;
-
             _keyBindSender = keyBindSender;
+            _boxMgr = boxMgr;
         }
 
         public bool IsRunning { get; set; }
 
         public async Task Start(CancellationToken ct)
         {
+            _boxMgr.Refresh();
             Log.Logger.Information("Starting bot...");
 
             if (_wowWindow.Handle == IntPtr.Zero)
@@ -40,10 +43,21 @@ namespace TenBot
                 return;
             }
 
+            try
+            {
+                _boxMgr.IsAddonVisible();
+            }
+            catch (Exception e)
+            {
+                Log.Logger.Error("Addon not visible");
+                return;
+            }
             _wowWindow.MoveWindow(Point.Empty);
-            _addonReaderMgr.Dump();
-            _botStates.Push(new AcquireTargetState(_botStates, _addonReaderMgr, _keyBindSender));
 
+            await _player.Rotate(50);
+            _botStates.Push(new AcquireTargetState(_botStates, _player, _keyBindSender));
+
+            _player.Dump();
             try
             {
                 IsRunning = true;
@@ -70,8 +84,7 @@ namespace TenBot
                     ct.ThrowIfCancellationRequested();
                 }
 
-                await Task.Delay(300);
-                _addonReaderMgr.Dump();
+                await Task.Delay(400);
                 await _botStates.Peek()?.Update()!;
             }
         }

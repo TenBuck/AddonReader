@@ -20,7 +20,7 @@ namespace TenBot.Extensions
 
         public static double ToDouble(this Color color)
         {
-            return color.ToInt() / 10000.0;
+            return color.ToInt() / 100000.0;
         }
 
 
@@ -28,7 +28,6 @@ namespace TenBot.Extensions
         public static bool ToBool(this Color color)
         {
             return (color.ToInt() == 1);
-
         }
     }
 }

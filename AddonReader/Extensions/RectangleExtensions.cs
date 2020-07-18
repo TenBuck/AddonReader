@@ -1,6 +1,4 @@
-﻿using System;
-using System.Drawing;
-
+﻿using System.Drawing;
 using PInvoke;
 
 namespace TenBot.Extensions
@@ -20,5 +18,9 @@ namespace TenBot.Extensions
             return new Rectangle(r.left, r.top, r.right - r.left, r.bottom - r.top);
         }
 
-      }
+        public static Point Middle(this Rectangle rectangle)
+        {
+            return new Point(rectangle.Location.X + rectangle.Width / 2, rectangle.Location.Y + rectangle.Height / 2);
+        }
+    }
 }

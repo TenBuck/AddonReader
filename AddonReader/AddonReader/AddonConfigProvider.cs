@@ -29,8 +29,7 @@ namespace TenBot
 
             _logger.Information("Loaded addon settings from saved variables");
         }
-
-
+        
         public Rectangle AddonRectangle => new Rectangle(0, 0, Columns * CellDistance, Rows * CellDistance);
 
         public int BoxCount { get; private set; }

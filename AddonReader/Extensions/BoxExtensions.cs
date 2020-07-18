@@ -29,7 +29,7 @@ namespace TenBot.Extensions
 
         public static double ToDouble(this Box box)
         {
-            return box.Color.ToInt() / 10000.0;
+            return (double)box.Color.ToInt() / 100000.0;
         }
 
 

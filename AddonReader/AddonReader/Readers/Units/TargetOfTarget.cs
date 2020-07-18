@@ -1,15 +1,11 @@
 ﻿using TenBot.AddonReader.Boxes;
 
-namespace TenBot.AddonReader.Readers.Unit
+namespace TenBot.AddonReader.Readers.Units
 {
-    public class TargetOfTarget :  TargetBase
+    public class TargetOfTarget : TargetBase
     {
-        public TargetOfTarget(BoxMgr boxMgr) : base(boxMgr, "targettarget2")
+        public TargetOfTarget(BoxMgr boxMgr) : base(boxMgr, "targettarget")
         {
-
-
         }
-
-      
     }
 }

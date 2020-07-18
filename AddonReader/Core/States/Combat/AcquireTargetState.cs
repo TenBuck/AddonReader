@@ -1,28 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Serilog;
-using TenBot.AddonReader;
-using TenBot.AddonReader.Readers.Unit;
+using TenBot.Core.WowPlayer;
 using TenBot.Game.WowTypes;
 
 namespace TenBot.Core.States.Combat
 {
     public class AcquireTargetState : IBotState
     {
-        private readonly AddonReaderMgr _addonReaderMgr;
+        
         private readonly Stack<IBotState> _botStates;
+        private readonly Player _player;
         private readonly KeyBindSender _keyBindSender;
-        private readonly TargetReader _targetReader;
+        private readonly PlayerTarget _target;
 
         // private bool IsFirstUpdate = true;
 
 
-        public AcquireTargetState(Stack<IBotState> botStates, AddonReaderMgr addonReaderMgr,
-            KeyBindSender keyBindSender)
+        public AcquireTargetState(Stack<IBotState> botStates, Player player, KeyBindSender keyBindSender)
         {
             _botStates = botStates;
-            _addonReaderMgr = addonReaderMgr;
-            _targetReader = _addonReaderMgr.Target;
+            _player = player;
+
+            _target = player.Target;
             _keyBindSender = keyBindSender;
         }
 
@@ -33,10 +33,10 @@ namespace TenBot.Core.States.Combat
             await _keyBindSender.SimulateKeyPress(KeyBinding.TARGETNEARESTENEMY);
 
 
-            if (_targetReader.Exists && !_targetReader.IsDead && !_targetReader.IsTapped)
+            if (_target.Reader.Exists && !_target.Reader.IsDead && !_target.Reader.IsTapped)
             {
                 await _keyBindSender.SimulateKeyPress(KeyBinding.STOPAUTORUN);
-                _botStates.Push(new MoveToTargetState(_botStates, _addonReaderMgr, _keyBindSender));
+                _botStates.Push(new MoveToTargetState(_botStates, _player, _keyBindSender));
                 return;
             }
 

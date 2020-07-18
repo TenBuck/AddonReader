@@ -1,45 +1,31 @@
 ﻿using Serilog;
 using TenBot.AddonReader.Readers;
-using TenBot.AddonReader.Readers.ActionBars;
-using TenBot.AddonReader.Readers.Unit;
 using TenBot.AddonReader.Readers.Units;
+using TenBot.Core.WowPlayer;
 
 namespace TenBot.AddonReader
 {
     public class AddonReaderMgr
     {
-        private readonly ILogger _logger;
+        
+        private readonly ILogger _logger = Log.Logger;
 
 
-        public AddonReaderMgr(
-            ILogger logger, PlayerReader playerReader, TargetOfTarget targetOfTarget,
-            PositionReader positionReader, TargetReader target, ActionsReader actions)
-
+        public AddonReaderMgr(Player player )
         {
-            Player = playerReader;
-            TargetOfTarget = targetOfTarget;
-            PositionReader = positionReader;
-            Target = target;
-
-            _logger = logger;
-            ActionsReader = actions;
+            Player = player;
+           
         }
 
-        public ActionsReader ActionsReader { get; }
-        public PositionReader PositionReader { get; }
-        public PlayerReader Player { get; }
-        public TargetOfTarget TargetOfTarget { get; }
-        public TargetReader Target { get; }
-
+      
+        public Player Player { get; }
 
         public void Dump()
         {
             _logger.Debug("{@Player}", Player);
-            _logger.Debug("{@Target}", Target);
-            _logger.Debug("{@TargetOfTarget}", TargetOfTarget);
-            _logger.Debug("{@Position}", PositionReader);
-            _logger.Debug("{@Actions}", ActionsReader);
-           
+            _logger.Debug("{@Target}", Player.Target);
+            _logger.Debug("{@TargetOfTarget}", Player.Target.Target);
+            _logger.Debug("{@Position}", Player.Reader.Position);
         }
     }
 }
