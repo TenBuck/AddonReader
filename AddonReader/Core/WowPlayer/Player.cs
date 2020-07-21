@@ -33,9 +33,6 @@ namespace TenBot.Core.WowPlayer
                 Log.Logger.Information("Moved: {Facing} with i={i}", postDelta );
                 
             
-
-
-           
         }
 
         public void Dump()
